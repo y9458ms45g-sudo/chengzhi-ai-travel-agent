@@ -177,30 +177,37 @@ if "messages" not in st.session_state:
 
 # ============ 启动页（竹林） ============
 if "started" not in st.session_state:
-    st.markdown("""
+    BG_URL = "https://raw.githubusercontent.com/y9458ms45g-sudo/chengzhi-ai-travel-agent/master/web/images/splash-bg.jpg"
+    st.markdown(f"""
     <style>
-      .stApp {
-        background: linear-gradient(160deg, #1a3a2a 0%, #2d5a3d 40%, #3d7a5a 100%) !important;
-      }
-      .launch-page {
+      .stApp {{
+        background: linear-gradient(160deg, rgba(26,77,58,0.65) 0%, rgba(26,77,58,0.85) 100%), url('{BG_URL}') center/cover no-repeat fixed !important;
+      }}
+      .launch-page {{
         height: 90vh; display: flex; flex-direction: column;
         align-items: center; justify-content: center; text-align: center;
         color: #fff;
-      }
-      .launch-subtitle {
-        font-size: 16px; letter-spacing: 8px; opacity: 0.8; margin-bottom: 20px;
-      }
-      .launch-title {
-        font-size: 88px; font-weight: 900; letter-spacing: 20px;
-        text-indent: 20px; margin-bottom: 24px; text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      }
-      .launch-desc {
-        font-size: 16px; line-height: 2; opacity: 0.9; margin-bottom: 40px;
-      }
+      }}
+      .launch-subtitle {{
+        font-size: 14px; letter-spacing: 6px; opacity: 0.75; margin-bottom: 30px;
+      }}
+      .launch-title {{
+        font-size: 110px; font-weight: 900; letter-spacing: 24px;
+        text-indent: 24px; margin-bottom: 0; text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        font-family: 'Noto Serif SC', serif;
+      }}
+      .launch-divider {{
+        width: 60px; height: 2px; background: rgba(255,255,255,0.4);
+        margin: 28px 0;
+      }}
+      .launch-desc {{
+        font-size: 16px; line-height: 2; opacity: 0.85; letter-spacing: 2px;
+      }}
     </style>
     <div class="launch-page">
       <div class="launch-subtitle">城 知 文 旅</div>
       <div class="launch-title">城知</div>
+      <div class="launch-divider"></div>
       <div class="launch-desc">
         全 国 文 旅 · 你 的 接 待 官<br>
         不推网红打卡 · 只讲真实好去处<br>
@@ -208,29 +215,36 @@ if "started" not in st.session_state:
       </div>
     </div>
     """, unsafe_allow_html=True)
-    if st.button("🌿 开始对话", use_container_width=False, type="primary"):
-        st.session_state.started = True
-        st.rerun()
+    st.write("")
+    col_btn1, col_btn2, col_btn3 = st.columns([1, 1.2, 1])
+    with col_btn2:
+        if st.button("🌿 开始对话", use_container_width=True, type="primary"):
+            st.session_state.started = True
+            st.rerun()
     st.stop()
 
 # ============ 三栏布局 ============
 col_left, col_center, col_right = st.columns([1.2, 4, 1.6])
 
-# 左栏：总控台
+# 左栏：总控台（可点击切换角色）
+if "current_ip" not in st.session_state:
+    st.session_state.current_ip = "master"
+
 with col_left:
     for group_name, items in IPS:
         st.markdown(f'<div class="ip-group-label">{group_name}</div>', unsafe_allow_html=True)
         for ip_id, avatar_char, color, name, title in items:
-            active = "active" if ip_id == "master" else ""
-            st.markdown(f"""
-            <div class="ip-item {active}">
-              <div class="ip-avatar" style="background:{color}">{avatar_char}</div>
-              <div>
-                <div class="ip-name">{name}</div>
-                <div class="ip-title">{title}</div>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
+            is_active = (ip_id == st.session_state.current_ip)
+            btn_type = "primary" if is_active else "secondary"
+            if st.button(
+                name,
+                key=f"ip_{ip_id}",
+                use_container_width=True,
+                type=btn_type,
+                help=f"{avatar_char} · {title}",
+            ):
+                st.session_state.current_ip = ip_id
+                st.rerun()
 
 # 中栏：对话区
 with col_center:
@@ -249,23 +263,13 @@ with col_center:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-# 右栏：非遗文化墙
+# 右栏：非遗文化墙（可点击展开）
 with col_right:
     st.markdown('<div class="hr-title">🎭 非遗文化墙</div>', unsafe_allow_html=True)
     st.markdown('<div class="hr-sub">指尖上的中国 · 点开任意一项听故事</div>', unsafe_allow_html=True)
     for emoji, name, city, desc in HERITAGE:
-        st.markdown(f"""
-        <div class="hr-card">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="hr-emoji">{emoji}</span>
-            <div>
-              <div class="hr-name">{name}</div>
-              <div class="hr-city">{city}</div>
-            </div>
-          </div>
-          <div class="hr-desc">{desc}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        with st.expander(f"{emoji} {name} {city}"):
+            st.markdown(desc)
 
 # ============ 输入框 ============
 user_input = st.chat_input("说说你的旅游需求...")
