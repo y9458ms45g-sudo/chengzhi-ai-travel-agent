@@ -12,6 +12,16 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dotenv import load_dotenv
 load_dotenv()
 
+# Streamlit Community Cloud 部署适配：把 st.secrets 注入环境变量
+# （本地运行时 st.secrets 可能不存在，不影响；云上部署时所有 API Key 在此配置）
+try:
+    import streamlit as _st
+    for _k, _v in _st.secrets.items():
+        if _k not in os.environ:
+            os.environ[_k] = str(_v)
+except Exception:
+    pass
+
 st.set_page_config(
     page_title="AI文旅助手",
     page_icon="🏔️",
