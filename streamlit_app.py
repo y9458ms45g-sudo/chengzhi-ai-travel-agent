@@ -175,6 +175,44 @@ if "agent_session" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# ============ 启动页（竹林） ============
+if "started" not in st.session_state:
+    st.markdown("""
+    <style>
+      .stApp {
+        background: linear-gradient(160deg, #1a3a2a 0%, #2d5a3d 40%, #3d7a5a 100%) !important;
+      }
+      .launch-page {
+        height: 90vh; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; text-align: center;
+        color: #fff;
+      }
+      .launch-subtitle {
+        font-size: 16px; letter-spacing: 8px; opacity: 0.8; margin-bottom: 20px;
+      }
+      .launch-title {
+        font-size: 88px; font-weight: 900; letter-spacing: 20px;
+        text-indent: 20px; margin-bottom: 24px; text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      }
+      .launch-desc {
+        font-size: 16px; line-height: 2; opacity: 0.9; margin-bottom: 40px;
+      }
+    </style>
+    <div class="launch-page">
+      <div class="launch-subtitle">城 知 文 旅</div>
+      <div class="launch-title">城知</div>
+      <div class="launch-desc">
+        全 国 文 旅 · 你 的 接 待 官<br>
+        不推网红打卡 · 只讲真实好去处<br>
+        帮你把行程算明白
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("🌿 开始对话", use_container_width=False, type="primary"):
+        st.session_state.started = True
+        st.rerun()
+    st.stop()
+
 # ============ 三栏布局 ============
 col_left, col_center, col_right = st.columns([1.2, 4, 1.6])
 
