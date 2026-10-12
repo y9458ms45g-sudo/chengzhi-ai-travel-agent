@@ -177,11 +177,19 @@ if "messages" not in st.session_state:
 
 # ============ 启动页（竹林） ============
 if "started" not in st.session_state:
-    BG_URL = "https://raw.githubusercontent.com/y9458ms45g-sudo/chengzhi-ai-travel-agent/master/web/images/splash-bg.jpg"
+    # 读取本地竹林照片并转 base64（不依赖外部 URL）
+    import base64
+    bg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web", "images", "splash-bg.jpg")
+    if os.path.exists(bg_path):
+        with open(bg_path, "rb") as f:
+            bg_b64 = base64.b64encode(f.read()).decode()
+        bg_css = f"url('data:image/jpeg;base64,{bg_b64}') center/cover no-repeat fixed"
+    else:
+        bg_css = "linear-gradient(160deg, #1a3a2a 0%, #2d5a3d 40%, #3d7a5a 100%)"
     st.markdown(f"""
     <style>
       .stApp {{
-        background: linear-gradient(160deg, rgba(26,77,58,0.65) 0%, rgba(26,77,58,0.85) 100%), url('{BG_URL}') center/cover no-repeat fixed !important;
+        background: linear-gradient(160deg, rgba(26,77,58,0.55) 0%, rgba(26,77,58,0.75) 100%), {bg_css} !important;
       }}
       .launch-page {{
         height: 90vh; display: flex; flex-direction: column;
