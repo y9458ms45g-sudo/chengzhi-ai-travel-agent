@@ -1,4 +1,6 @@
-# AI文旅Agent
+# 城知 · AI文旅智能助手
+
+> **🎯 在线 Demo（面试官可直接体验）：** [https://chengzhi-travel-agent.streamlit.app](https://chengzhi-travel-agent.streamlit.app)
 
 通过大模型调度天气、路况、民俗知识库、网红打卡点、景点信息等多源数据，为游客自动生成个性化旅游攻略。
 
