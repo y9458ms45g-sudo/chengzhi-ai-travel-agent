@@ -158,6 +158,29 @@ IPS = [
     ]),
 ]
 
+# 角色人设（切换后注入AI对话）
+IP_PERSONAS = {
+    "master": "你是小知，城知总控官，负责全局调度和默认对话。语气专业、亲切，帮用户规划整体行程。",
+    "sichuan": "你是川川，四川省级接待官。语气热情活泼，带着四川口音，推荐四川全省的美食、景点和文化。",
+    "chongqing": "你是渝渝，重庆省级接待官。性格豪爽直接，带着重庆口音，推荐重庆的火锅、夜景和山城步道。",
+    "chengdu": "你是蓉蓉，成都接待官。语气慵懒悠闲，带着成都慢生活气质，推荐茶馆、熊猫、宽窄巷子和串串香。",
+    "meishan": "你是苏苏，眉山接待官。文质彬彬，带着东坡文化气质，推荐三苏祠、东坡美食和青神竹编。",
+    "leshan": "你是山山，乐山接待官。语气沉稳，推荐乐山大佛、峨眉山和跷脚牛肉。",
+    "yibin": "你是酒仙，宜宾接待官。性格豪爽，带着酒文化气质，推荐五粮液、蜀南竹海和李庄白肉。",
+    "zigong": "你是灯灯，自贡接待官。语气活泼，推荐自贡灯会、恐龙博物馆和盐帮菜。",
+    "mianyang": "你是绵宝，绵阳接待官。科技感十足，推荐两弹城、科技城和米粉。",
+    "nanchong": "你是充充，南充接待官。历史文化氛围浓厚，推荐阆中古城、嘉陵江和川北凉粉。",
+    "cq_county": "你是渝县，重庆区县接待官。熟悉重庆各区县特色，推荐武隆天坑、酉阳桃花源和巫山小三峡。",
+    "beijing": "你是京京，北京接待官。语气大气沉稳，带着老北京味儿，推荐故宫、长城、烤鸭和胡同。",
+    "xian": "你是西西，西安接待官。历史感厚重，推荐兵马俑、大雁塔、肉夹馍和回民街。",
+}
+
+# 角色名映射（用于显示当前角色）
+IP_NAME_MAP = {}
+for group_name, items in IPS:
+    for ip_id, avatar_char, color, name, title in items:
+        IP_NAME_MAP[ip_id] = (name, title)
+
 # ============ 非遗数据 ============
 HERITAGE = [
     ("🎭", "川剧变脸", "📍成都", "一秒换脸的绝活。川剧绝活，清末康子林首创扯线变脸，一场最多连变九张脸，被誉为东方魔术。"),
@@ -198,18 +221,38 @@ if "started" not in st.session_state:
       }}
       .launch-subtitle {{
         font-size: 14px; letter-spacing: 6px; opacity: 0.75; margin-bottom: 30px;
+        animation: fadeInDown 1.2s ease-out 0.3s both;
       }}
       .launch-title {{
         font-size: 110px; font-weight: 900; letter-spacing: 24px;
         text-indent: 24px; margin-bottom: 0; text-shadow: 0 4px 30px rgba(0,0,0,0.4);
         font-family: 'Noto Serif SC', serif;
+        animation: fadeInZoom 1.5s ease-out 0.6s both;
       }}
       .launch-divider {{
         width: 60px; height: 2px; background: rgba(255,255,255,0.4);
         margin: 28px 0;
+        animation: fadeIn 1s ease-out 1.5s both;
       }}
       .launch-desc {{
         font-size: 16px; line-height: 2; opacity: 0.85; letter-spacing: 2px;
+        animation: fadeInUp 1.2s ease-out 1.8s both;
+      }}
+      @keyframes fadeInDown {{
+        from {{ opacity: 0; transform: translateY(-20px); }}
+        to {{ opacity: 0.75; transform: translateY(0); }}
+      }}
+      @keyframes fadeInZoom {{
+        from {{ opacity: 0; transform: scale(0.8); }}
+        to {{ opacity: 1; transform: scale(1); }}
+      }}
+      @keyframes fadeIn {{
+        from {{ opacity: 0; }}
+        to {{ opacity: 1; }}
+      }}
+      @keyframes fadeInUp {{
+        from {{ opacity: 0; transform: translateY(20px); }}
+        to {{ opacity: 0.85; transform: translateY(0); }}
       }}
     </style>
     <div class="launch-page">
@@ -234,7 +277,7 @@ if "started" not in st.session_state:
 # ============ 三栏布局 ============
 col_left, col_center, col_right = st.columns([1.2, 4, 1.6])
 
-# 左栏：总控台（可点击切换角色）
+# 左栏：总控台（可点击切换角色，带头像色块）
 if "current_ip" not in st.session_state:
     st.session_state.current_ip = "master"
 
@@ -243,25 +286,32 @@ with col_left:
         st.markdown(f'<div class="ip-group-label">{group_name}</div>', unsafe_allow_html=True)
         for ip_id, avatar_char, color, name, title in items:
             is_active = (ip_id == st.session_state.current_ip)
-            btn_type = "primary" if is_active else "secondary"
+            # 按钮文字：色块emoji + 角色名 + 头衔
+            btn_label = f"🟦 {name}" if is_active else f"⬜ {name}"
             if st.button(
-                name,
+                btn_label,
                 key=f"ip_{ip_id}",
                 use_container_width=True,
-                type=btn_type,
-                help=f"{avatar_char} · {title}",
+                type="primary" if is_active else "secondary",
+                help=title,
             ):
                 st.session_state.current_ip = ip_id
+                # 切换角色时清空对话，开始新人设
+                st.session_state.messages = []
+                st.session_state.agent_session.reset()
                 st.rerun()
 
 # 中栏：对话区
+current_ip = st.session_state.current_ip
+current_name, current_title = IP_NAME_MAP.get(current_ip, ("小知·总控官", "全局调度"))
+
 with col_center:
     if not st.session_state.messages:
-        st.markdown("""
+        st.markdown(f"""
         <div class="welcome">
           <div style="font-size:48px;margin-bottom:16px">🏔️</div>
-          <h2>你好，我是小知</h2>
-          <p>我是城知总控官，你的专属文旅调度助手。<br>
+          <h2>你好，我是{current_name}</h2>
+          <p>{current_title}，你的专属文旅接待官。<br>
           告诉我你在哪个城市、想玩几天，我来帮你安排。<br><br>
           <span style="color:#aaa;font-size:13px">例如："重庆3天2晚带老人"或"成都到西安怎么走"</span></p>
         </div>
@@ -293,7 +343,10 @@ if user_input:
                 if should_reset(user_input, "", 0):
                     st.session_state.agent_session.reset()
                 try:
-                    draft = run_agent(user_input, st.session_state.agent_session)
+                    # 注入当前角色人设
+                    persona = IP_PERSONAS.get(current_ip, "")
+                    enhanced_input = f"{persona}\n\n用户需求：{user_input}" if persona else user_input
+                    draft = run_agent(enhanced_input, st.session_state.agent_session)
                     from app.agent.reflector import reflect
                     review = reflect(draft)
                     if review.get("has_problem"):
