@@ -1,0 +1,88 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="56" width="800" height="46">
+      <content textType="title" fontSize="30" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>亮点一：AI 自动城市转接</p>
+      </content>
+    </shape>
+    <line startX="80" startY="118" endX="160" endY="118">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+
+    <!-- 三步流程 -->
+    <shape type="text" topLeftX="80" topLeftY="160" width="220" height="30">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>① 用户自然输入</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="195" width="220" height="80">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>"去乐山吃跷脚牛肉，两天"</p>
+      </content>
+    </shape>
+
+    <line startX="310" startY="225" endX="360" endY="225">
+      <border color="rgba(45,106,79,1)" width="2"/>
+      <endArrow type="arrow"/>
+    </line>
+
+    <shape type="text" topLeftX="375" topLeftY="160" width="220" height="30">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>② 规则关键词命中</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="375" topLeftY="195" width="220" height="80">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>命中"乐山 / 跷脚牛肉"→ 定位 leshan</p>
+      </content>
+    </shape>
+
+    <line startX="605" startY="225" endX="655" endY="225">
+      <border color="rgba(45,106,79,1)" width="2"/>
+      <endArrow type="arrow"/>
+    </line>
+
+    <shape type="text" topLeftX="670" topLeftY="160" width="220" height="30">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>③ SSE 事件自动转接</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="670" topLeftY="195" width="260" height="80">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>切头像、切人设、注入城市知识库</p>
+      </content>
+    </shape>
+
+    <line startX="80" startY="320" endX="880" endY="320">
+      <border color="rgba(200,195,185,1)" width="1"/>
+    </line>
+
+    <shape type="text" topLeftX="80" topLeftY="345" width="800" height="30">
+      <content textType="headline" fontSize="17" color="rgba(45,106,79,1)" fontFamily="思源黑体" bold="true">
+        <p>为什么用规则，而不是让大模型判断？</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="385" width="380" height="110">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.6">
+        <p>· 零 token 成本，毫秒级响应</p>
+        <p>· 规则可解释、可调试、不抽风</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="490" topLeftY="385" width="390" height="110">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.6">
+        <p>· 9 城关键词表维护即可，新城市 5 分钟接入</p>
+        <p>· LLM 专注内容生成，不消耗在路由上</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>这是我们第一个技术决策：城市转接用关键词规则，不用大模型判断。</p>
+      <p>用户一句话进来，系统先扫关键词，命中乐山就立刻发一个 transfer 事件，前端自动把头像和人设切成山山，并把乐山知识库注入上下文。</p>
+      <p>好处是零成本、毫秒级、不抽风，比赛现场很稳。</p>
+    </content>
+  </note>
+</slide>

@@ -1,0 +1,73 @@
+{
+  "_comment": "城知 Agent 回归测试集。type=detect 为确定性城市识别（免费、即时）；type=agent 为端到端跑 run_agent 后做包含/不包含断言（耗 LLM）。",
+  "detect": [
+    {"id": "d01", "input": "北京故宫门票多少钱", "expect_ip": "beijing", "note": "故宫归属北京"},
+    {"id": "d02", "input": "沈阳故宫开放时间", "expect_ip": "shenyang", "note": "沈阳故宫不能被北京故宫抢走"},
+    {"id": "d03", "input": "扬州早茶哪家好吃", "expect_ip": "yangzhou", "note": "淮扬早茶归属扬州"},
+    {"id": "d04", "input": "广州哪里喝早茶正宗", "expect_ip": "guangzhou", "note": "粤式早茶归属广州"},
+    {"id": "d05", "input": "成都大熊猫基地游玩攻略", "expect_ip": "chengdu"},
+    {"id": "d06", "input": "重庆洪崖洞夜景", "expect_ip": "chongqing"},
+    {"id": "d07", "input": "乐山跷脚牛肉哪家地道", "expect_ip": "leshan"},
+    {"id": "d08", "input": "敦煌莫高窟怎么预约", "expect_ip": "dunhuang"},
+    {"id": "d09", "input": "西安兵马俑一日游", "expect_ip": "xian"},
+    {"id": "d10", "input": "杭州西湖游船怎么坐", "expect_ip": "hangzhou"},
+    {"id": "d11", "input": "上海迪士尼排队多久", "expect_ip": "shanghai"},
+    {"id": "d12", "input": "三亚亚龙湾酒店推荐", "expect_ip": "sanya"},
+    {"id": "d13", "input": "长沙橘子洲烟花时间", "expect_ip": "changsha"},
+    {"id": "d14", "input": "武汉热干面哪家正宗", "expect_ip": "wuhan"},
+    {"id": "d15", "input": "厦门鼓浪屿船票", "expect_ip": "xiamen"},
+    {"id": "d16", "input": "青岛崂山爬山路线", "expect_ip": "qingdao"},
+    {"id": "d17", "input": "洛阳牡丹花期是什么时候", "expect_ip": "luoyang"},
+    {"id": "d18", "input": "哈尔滨冰雪大世界门票", "expect_ip": "harbin"},
+    {"id": "d19", "input": "天津之眼摩天轮", "expect_ip": "tianjin"},
+    {"id": "d20", "input": "郑州少林寺研学", "expect_ip": "zhengzhou", "note": "少林寺在郑州/嵩山"},
+    {"id": "d21", "input": "南京中山陵要预约吗", "expect_ip": "nanjing"},
+    {"id": "d22", "input": "苏州拙政园怎么预约", "expect_ip": "suzhou"},
+    {"id": "d23", "input": "丽江玉龙雪山门票", "expect_ip": "lijiang"},
+    {"id": "d24", "input": "珠海长隆海洋王国", "expect_ip": "zhuhai"},
+    {"id": "d25", "input": "景德镇陶瓷博物馆", "expect_ip": "jingdezhen"},
+    {"id": "d26", "input": "无锡鼋头渚樱花", "expect_ip": "wuxi"},
+    {"id": "d27", "input": "北海涠洲岛船票", "expect_ip": "beihai"},
+    {"id": "d28", "input": "遵义会议会址参观", "expect_ip": "zunyi"},
+    {"id": "d29", "input": "景德镇陶溪川夜市", "expect_ip": "jingdezhen"},
+    {"id": "d30", "input": "武隆天生三桥", "expect_ip": "chongqing_county", "note": "区县关键词归 chongqing_county"},
+    {"id": "d31", "input": "自贡灯会时间", "expect_ip": "zigong"},
+    {"id": "d32", "input": "绵阳方特东方神画", "expect_ip": "mianyang"},
+    {"id": "d33", "input": "阆中古城怎么玩", "expect_ip": "nanchong"},
+    {"id": "d34", "input": "稻城亚丁几月份去最好", "expect_ip": "daocheng"}
+  ],
+  "agent": [
+    {
+      "id": "a01", "input": "北京3天2晚怎么玩",
+      "expect": ["Day1", "第一天", "第1天", "Day 1"], "expect_any": true,
+      "must_contain": ["北京"], "max_tool_calls": 4, "note": "行程类应按天组织"
+    },
+    {
+      "id": "a02", "input": "成都今天天气怎么样",
+      "must_contain": ["°", "天气"], "max_tool_calls": 3, "note": "天气应答含温度"
+    },
+    {
+      "id": "a03", "input": "沈阳故宫值得去吗",
+      "must_contain": ["沈阳"], "must_not_contain": ["您已被转接至京京"], "max_tool_calls": 3,
+      "note": "跨城冲突：应落到沈阳而非北京"
+    },
+    {
+      "id": "a04", "input": "乐山有什么好吃的",
+      "must_contain": ["乐山", "吃", "美食", "牛肉", "甜皮鸭", "钵钵鸡"], "expect_any": true,
+      "max_tool_calls": 3
+    },
+    {
+      "id": "a05", "input": "杭州2天1晚带老人怎么安排",
+      "expect": ["Day1", "第一天", "第1天", "Day 1", "第一天"], "expect_any": true,
+      "must_contain": ["杭州"], "max_tool_calls": 4, "note": "带老人行程应按天"
+    },
+    {
+      "id": "a06", "input": "厦门现在穿什么合适",
+      "must_contain": ["°", "天气"], "max_tool_calls": 3
+    },
+    {
+      "id": "a07", "input": "广州长隆适合小孩玩吗",
+      "must_contain": ["广州", "长隆"], "max_tool_calls": 3, "note": "长隆归属广州"
+    }
+  ]
+}

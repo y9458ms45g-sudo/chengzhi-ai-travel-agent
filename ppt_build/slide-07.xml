@@ -1,0 +1,88 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="50" width="800" height="44">
+      <content textType="title" fontSize="30" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>技术架构：轻量 MVP，一个文件就能跑</p>
+      </content>
+    </shape>
+    <line startX="80" startY="110" endX="160" endY="110">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+
+    <!-- 分层 -->
+    <shape type="text" topLeftX="80" topLeftY="140" width="130" height="34">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>展示层</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="230" topLeftY="140" width="650" height="34">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体">
+        <p>单文件前端 index.html ｜ 三栏布局 ｜ SSE 打字机流式 ｜ 非遗馆 / 团建表单</p>
+      </content>
+    </shape>
+    <line startX="80" startY="185" endX="880" endY="185"><border color="rgba(210,205,195,1)" width="1"/></line>
+
+    <shape type="text" topLeftX="80" topLeftY="200" width="130" height="34">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>服务层</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="230" topLeftY="200" width="650" height="34">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体">
+        <p>FastAPI :8000 ｜ SSE 流式接口 ｜ 历史 / 重置 / IP 路由 REST</p>
+      </content>
+    </shape>
+    <line startX="80" startY="245" endX="880" endY="245"><border color="rgba(210,205,195,1)" width="1"/></line>
+
+    <shape type="text" topLeftX="80" topLeftY="260" width="130" height="34">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>Agent 层</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="230" topLeftY="260" width="650" height="34">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体">
+        <p>ReAct 循环 ｜ 关键词城市识别 ｜ should_reset 规则 ｜ 上下文裁剪最近 10 轮</p>
+      </content>
+    </shape>
+    <line startX="80" startY="305" endX="880" endY="305"><border color="rgba(210,205,195,1)" width="1"/></line>
+
+    <shape type="text" topLeftX="80" topLeftY="320" width="130" height="34">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>工具层</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="230" topLeftY="320" width="650" height="34">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体">
+        <p>weather ｜ traffic ｜ knowledge ｜ web_search ｜ scenic（已扩到 9 城）</p>
+      </content>
+    </shape>
+    <line startX="80" startY="365" endX="880" endY="365"><border color="rgba(210,205,195,1)" width="1"/></line>
+
+    <shape type="text" topLeftX="80" topLeftY="380" width="130" height="34">
+      <content textType="body" fontSize="14" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>模型/存储</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="230" topLeftY="380" width="650" height="34">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体">
+        <p>DeepSeek（OpenAI 兼容）｜ SQLite 单文件持久化 ｜ 9 份城市知识库 Markdown</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="445" width="800" height="60">
+      <content textType="body" fontSize="14" color="rgba(45,106,79,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>比赛 MVP 取舍：不上 PostgreSQL / Docker / Redis / 向量库，单机双击 start.bat 即可演示。</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>这是整体架构，分五层：前端、FastAPI、Agent、工具、模型存储。</p>
+      <p>关键取舍是：比赛 MVP 不上 PostgreSQL、Docker、Redis，更不上向量库，SQLite 单文件双击就能跑。</p>
+      <p>知识库也是按城市路由整个 Markdown 文件，不做向量检索，够用、稳定、好调试。</p>
+    </content>
+  </note>
+</slide>

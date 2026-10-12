@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>城知 · 管理后台</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Microsoft YaHei",system-ui,sans-serif;background:#f4f2ee;color:#222}
+  .login{max-width:340px;margin:120px auto;background:#fff;border-radius:12px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+  .login h1{font-size:20px;margin-bottom:16px;color:#1a3a4a}
+  .login input{width:100%;padding:10px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
+  .login button{width:100%;padding:10px;background:#1a3a4a;color:#fff;border:0;border-radius:8px;cursor:pointer;margin-top:8px}
+  .err{color:#c0392b;font-size:13px;margin-top:8px}
+  .top{background:#1a3a4a;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+  .top h1{font-size:18px}
+  .top button{background:#c0392b;color:#fff;border:0;padding:6px 14px;border-radius:6px;cursor:pointer}
+  .wrap{max-width:1200px;margin:20px auto;padding:0 16px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
+  .card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .card .n{font-size:28px;font-weight:700;color:#1a3a4a}
+  .card .l{font-size:13px;color:#888;margin-top:4px}
+  .tabs{display:flex;gap:8px;margin-bottom:14px}
+  .tabs button{padding:8px 18px;border:0;background:#fff;border-radius:8px;cursor:pointer;font-size:14px}
+  .tabs button.on{background:#1a3a4a;color:#fff}
+  .panel{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #eee;vertical-align:top}
+  th{color:#888;font-weight:600;background:#fafafa}
+  tr:hover td{background:#f8f9fa}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;background:#e8f0e8;color:#2d6a4f}
+  .tag.bad{background:#fbe9e7;color:#c0392b}
+  .click{cursor:pointer;color:#1565c0}
+  .chatbox{background:#f8f9fa;border-radius:8px;padding:12px;margin-top:10px;max-height:420px;overflow:auto}
+  .msg{margin-bottom:10px;padding:8px 10px;border-radius:8px;max-width:80%}
+  .msg.u{background:#e3f2fd;margin-left:auto}
+  .msg.a{background:#fff}
+  .muted{color:#999;font-size:12px}
+  .backup{margin-bottom:14px}
+  .backup button{background:#2d6a4f;color:#fff;border:0;padding:8px 16px;border-radius:8px;cursor:pointer}
+  .hide{display:none}
+</style>
+</head>
+<body>
+
+<!-- 登录 -->
+<div class="login" id="loginBox">
+  <h1>🏙️ 城知 · 管理后台</h1>
+  <input type="password" id="pwd" placeholder="管理员密码">
+  <button onclick="login()">登 录</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<!-- 主界面 -->
+<div id="adminBox" class="hide">
+  <div class="top">
+    <h1>🏙️ 城知管理后台</h1>
+    <div>
+      <button onclick="location.reload()">刷新</button>
+      <button onclick="logout()">退出</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="cards" id="cards"></div>
+    <div class="backup"><button onclick="backup()">⬇️ 一键备份数据库(下载 chat.db)</button></div>
+    <div class="tabs">
+      <button class="on" data-tab="sessions" onclick="switchTab('sessions')">💬 会话列表</button>
+      <button data-tab="bad" onclick="switchTab('bad')">👎 差评工单</button>
+      <button data-tab="profiles" onclick="switchTab('profiles')">👤 用户偏好</button>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>
+</div>
+
+<script>
+let TOKEN = localStorage.getItem('admin_token') || '';
+const API = (location.protocol === 'http:' || location.protocol === 'https:')
+  ? location.origin : 'http://localhost:8000';
+
+async function call(path){
+  const r = await fetch(API+path, {headers:{Authorization:'Bearer '+TOKEN}});
+  if(r.status===401){ logout(); throw new Error('未登录'); }
+  return r.json();
+}
+async function login(){
+  const pwd = document.getElementById('pwd').value;
+  if(!pwd){ document.getElementById('loginErr').textContent='请输入密码'; return; }
+  try {
+    const r = await fetch(API+'/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+    if(r.ok){ const d=await r.json(); TOKEN=d.token; localStorage.setItem('admin_token',TOKEN); enter(); }
+    else { document.getElementById('loginErr').textContent='密码错误，请重试'; }
+  } catch(e) {
+    document.getElementById('loginErr').textContent='⚠️ 连不上后端，请先双击桌面"城知文旅"启动，再访问 http://localhost:8000/admin';
+  }
+}
+function logout(){ localStorage.removeItem('admin_token'); location.reload(); }
+
+async function loadStats(){
+  const s = await call('/api/admin/stats');
+  const items = [
+    ['在跑会话', s.sessions], ['消息总数', s.messages],
+    ['👍 好评', s.fb_good], ['👎 差评', s.fb_bad],
+    ['记忆用户', s.profiles]
+  ];
+  document.getElementById('cards').innerHTML = items.map(([l,n])=>
+    `<div class="card"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+}
+
+async function loadSessions(){
+  const d = await call('/api/admin/sessions');
+  let html = `<table><tr><th>会话ID</th><th>当前城市</th><th>消息数</th><th>最后活跃</th><th></th></tr>`;
+  for(const s of d.sessions){
+    html += `<tr><td class="muted">${s.id.slice(0,20)}…</td><td><span class="tag">${s.current_ip}</span></td>
+      <td>${s.msg_cnt}</td><td class="muted">${new Date(s.updated_at*1000).toLocaleString()}</td>
+      <td class="click" onclick="viewChat('${s.id}')">查看对话 →</td></tr>`;
+  }
+  html += '</table><div id="chatbox"></div>';
+  document.getElementById('panel').innerHTML = html;
+}
+
+async function viewChat(sid){
+  const d = await call('/api/admin/chat?session_id='+encodeURIComponent(sid));
+  let html = '<div class="chatbox">';
+  for(const m of d.messages){
+    if(m.role==='user') html += `<div class="msg u"><b>我：</b>${esc(m.content)}</div>`;
+    else if(m.role==='assistant') html += `<div class="msg a"><b>小知：</b>${esc(m.content.slice(0,800))}</div>`;
+  }
+  html += '</div>';
+  document.getElementById('chatbox').innerHTML = html;
+  document.getElementById('chatbox').scrollIntoView();
+}
+
+async function loadBad(){
+  const d = await call('/api/admin/feedback?rating=-1');
+  let html = `<p class="muted">共 ${d.cases.length} 条差评（最近）</p><table><tr><th>用户原话</th><th>AI回答</th><th>备注</th></tr>`;
+  for(const c of d.cases){
+    html += `<tr><td>${esc(c.user_input.slice(0,150))}</td><td class="muted">${esc(c.assistant_text.slice(0,200))}</td><td>${esc(c.note||'')}</td></tr>`;
+  }
+  html += '</table>';
+  document.getElementById('panel').innerHTML = html;
+}
+
+async function loadProfiles(){
+  const d = await call('/api/admin/profiles');
+  let html = `<p class="muted">已记住偏好的用户 ${d.profiles.length} 人</p><table><tr><th>会话</th><th>记住的偏好</th><th>更新时间</th></tr>`;
+  for(const p of d.profiles){
+    const kv = Object.entries(p.prefs).map(([k,v])=>`${k}:${v}`).join('，');
+    html += `<tr><td class="muted">${p.session_id.slice(0,16)}…</td><td>${esc(kv)}</td><td class="muted">${new Date(p.updated_at*1000).toLocaleString()}</td></tr>`;
+  }
+  html += '</table>';
+  document.getElementById('panel').innerHTML = html;
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  if(t==='sessions') loadSessions();
+  else if(t==='bad') loadBad();
+  else loadProfiles();
+}
+
+function backup(){
+  fetch(API+'/api/admin/backup',{headers:{Authorization:'Bearer '+TOKEN}}).then(r=>r.blob()).then(b=>{
+    const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='chat_backup.db'; a.click();
+  });
+}
+function esc(s){ return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function enter(){
+  document.getElementById('loginBox').classList.add('hide');
+  document.getElementById('adminBox').classList.remove('hide');
+  await loadStats(); loadSessions();
+}
+if(TOKEN) enter().catch(()=>{});
+</script>
+</body>
+</html>

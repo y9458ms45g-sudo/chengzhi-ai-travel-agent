@@ -1,0 +1,2668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>城知 · 文旅智能对话系统</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Noto Sans SC',sans-serif;
+    background:linear-gradient(160deg,#f5f1ea 0%,#ece5d8 100%);
+    height:100vh; display:flex; flex-direction:column; overflow:hidden;
+  }
+  /* ============ 逛一逛 ============ */
+  .stroll-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1100;
+    display:none; align-items:center; justify-content:center;
+  }
+  .stroll-overlay.show { display:flex; }
+  .stroll-panel {
+    background:#fff; border-radius:16px; width:90%; max-width:900px;
+    max-height:85vh; overflow-y:auto; padding:24px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+  }
+  .stroll-head {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    margin-bottom:20px;
+  }
+  .stroll-head h2 { font-size:22px; color:#1a4d3a; }
+  .close-btn {
+    background:#f0f0f0; border:none; width:32px; height:32px; border-radius:50%;
+    font-size:16px; cursor:pointer;
+  }
+  .stroll-grid {
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:16px;
+  }
+  .stroll-card {
+    border-radius:14px; overflow:hidden; cursor:pointer;
+    background:#f8f7f4; transition:all 0.25s; border:1px solid #eee;
+  }
+  .stroll-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
+  .stroll-card-img {
+    height:140px; display:flex; align-items:center; justify-content:center;
+    font-size:56px;
+  }
+  .stroll-card-body { padding:12px 14px; }
+  .stroll-card-name { font-size:16px; font-weight:600; color:#222; margin-bottom:4px; }
+  .stroll-card-tag {
+    display:inline-block; font-size:11px; padding:2px 8px; border-radius:10px;
+    background:#e8f0e8; color:#2d6a4f; margin-right:4px; margin-bottom:4px;
+  }
+  .stroll-card-addr { font-size:12px; color:#888; margin-top:6px; }
+  .stroll-detail { margin-top:10px; }
+  .back-btn {
+    background:none; border:none; color:#2d6a4f; font-size:14px; cursor:pointer;
+    margin-bottom:16px; padding:6px 0;
+  }
+  .stroll-detail-img {
+    height:200px; border-radius:14px; display:flex; align-items:center;
+    justify-content:center; font-size:80px; margin-bottom:16px;
+  }
+  .stroll-detail h3 { font-size:22px; color:#1a4d3a; margin-bottom:8px; }
+  .stroll-detail p { line-height:1.8; color:#444; margin-bottom:10px; font-size:14px; }
+  /* ============ 侧边功能栏 ============ */
+  .side-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:1000;
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
+  }
+  .side-overlay.show { opacity:1; pointer-events:auto; }
+  .side-panel {
+    position:fixed; top:0; right:-280px; width:260px; height:100vh;
+    background:#fff; box-shadow:-4px 0 20px rgba(0,0,0,0.15); z-index:1001;
+    transition:right 0.3s ease; display:flex; flex-direction:column; padding:16px; gap:6px;
+  }
+  .side-panel.show { right:0; }
+  .side-head {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 4px 16px; border-bottom:1px solid #eee; margin-bottom:12px; font-size:16px;
+  }
+  .side-item {
+    display:block; width:100%; padding:14px 16px; margin:2px 0;
+    background:#f8f7f4; border:none; border-radius:10px; text-align:left;
+    font-size:15px; cursor:pointer; transition:all 0.2s;
+  }
+  .side-item:hover { background:#e8f0e8; transform:translateX(-3px); }
+  /* ============ 启动欢迎屏 ============ */
+  .bamboo-deco {
+    position:absolute; pointer-events:none; z-index:0;
+    animation:bambooSway 7s ease-in-out infinite;
+    filter:blur(0.5px);
+  }
+  @keyframes bambooSway {
+    0%,100% { transform:rotate(-3deg) translateY(0); }
+    50% { transform:rotate(3deg) translateY(-8px); }
+  }
+  .splash {
+    position:fixed; inset:0; z-index:9999;
+    background:
+      linear-gradient(180deg, rgba(26,77,58,0.35) 0%, rgba(26,77,58,0.55) 100%),
+      url('images/splash-bg.jpg') center/cover no-repeat;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:transform 0.9s cubic-bezier(0.7,0,0.3,1), opacity 0.6s;
+    overflow:hidden;
+  }
+  .splash.hidden { transform:translateY(-100%); opacity:0; pointer-events:none; }
+  .splash-brand {
+    font-family:'Noto Serif SC',serif; font-size:14px; color:rgba(255,255,255,0.7);
+    letter-spacing:4px; margin-bottom:30px;
+    opacity:0; animation:subIn 1.5s ease-out 0.3s forwards;
+  }
+  .splash-title {
+    font-family:'Noto Serif SC',serif;
+    font-size:110px; font-weight:900; color:#fff;
+    letter-spacing:24px; text-indent:24px;
+    opacity:0; transform:translateY(30px);
+    text-shadow:0 4px 30px rgba(0,0,0,0.4);
+    animation:titleIn 2.2s ease-out 0.8s forwards;
+    cursor:default; user-select:none;
+  }
+  @keyframes titleIn {
+    to { opacity:1; transform:translateY(0); }
+  }
+  @keyframes subIn { to { opacity:1; } }
+  .splash-sub {
+    margin-top:28px; font-size:18px; color:rgba(255,255,255,0.85);
+    letter-spacing:8px; text-indent:8px; font-weight:300;
+    opacity:0; animation:subIn 1.8s ease-out 1.8s forwards;
+  }
+  .splash-divider {
+    width:60px; height:2px; background:rgba(255,255,255,0.4);
+    margin:28px 0; opacity:0; animation:subIn 1.5s ease-out 2.3s forwards;
+  }
+  .splash-tagline {
+    font-size:14px; color:rgba(255,255,255,0.65);
+    letter-spacing:2px; line-height:1.8; text-align:center;
+    opacity:0; animation:subIn 1.8s ease-out 2.5s forwards;
+  }
+  .splash-btn {
+    margin-top:50px; padding:14px 50px;
+    background:rgba(240,245,230,0.9); color:#1a4d3a;
+    border:none; border-radius:30px; font-size:16px; font-weight:500;
+    letter-spacing:4px; cursor:pointer;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+    transition:all 0.3s;
+    opacity:0; animation:subIn 1.5s ease-out 3s forwards;
+  }
+  .splash-btn:hover { background:#fff; transform:translateY(-2px); box-shadow:0 6px 25px rgba(0,0,0,0.3); }
+  .splash-hint {
+    position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+    color:rgba(255,255,255,0.5); font-size:12px; letter-spacing:3px;
+    opacity:0; animation:subIn 1.5s ease-out 3.5s forwards;
+  }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:#cfc8bb; border-radius:4px; }
+  ::-webkit-scrollbar-thumb:hover { background:#b5ac9c; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  .topbar {
+    background:linear-gradient(90deg,#16303e 0%,#25593f 100%);
+    color:#fff; padding:0 24px; height:60px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:space-between;
+    box-shadow:0 4px 20px rgba(26,58,74,0.25); z-index:10;
+  }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand .seal {
+    width:38px; height:38px; background:linear-gradient(135deg,#c0392b,#96281b);
+    border-radius:8px; box-shadow:0 3px 8px rgba(192,57,43,0.4);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Noto Serif SC',serif; font-size:20px; font-weight:900; color:#fff;
+  }
+  .brand h1 { font-family:'Noto Serif SC',serif; font-size:22px; font-weight:700; letter-spacing:2px; text-shadow:0 1px 3px rgba(0,0,0,0.2); }
+  .brand .tag { font-size:11px; opacity:0.7; margin-top:2px; }
+  .topbar .province-bar { display:flex; gap:8px; }
+  .province-chip {
+    padding:6px 16px; border-radius:20px; font-size:13px; cursor:pointer;
+    background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+    transition:all 0.25s;
+  }
+  .province-chip.active { background:#c0392b; border-color:#c0392b; box-shadow:0 2px 8px rgba(192,57,43,0.4); }
+  .province-chip:hover { background:rgba(255,255,255,0.25); transform:translateY(-1px); }
+  .topbar .actions { display:flex; gap:8px; }
+  .action-btn {
+    padding:6px 14px; background:rgba(255,255,255,0.12); border:none;
+    color:#fff; border-radius:8px; font-size:12px; cursor:pointer; font-family:inherit;
+    transition:all 0.2s;
+  }
+  .action-btn:hover { background:rgba(255,255,255,0.28); transform:translateY(-1px); }
+  .main { flex:1; display:flex; overflow:hidden; min-height:0; position:relative; }
+  .ip-sidebar {
+    width:240px; background:#fff; border-right:1px solid #e5e1da;
+    padding:16px; overflow-y:auto; flex-shrink:0;
+  }
+  .ip-group { margin-bottom:18px; }
+  .ip-group-label { font-size:11px; color:#c0392b; font-weight:700; margin-bottom:8px; letter-spacing:1px; }
+  .ip-item {
+    display:flex; align-items:center; gap:10px; padding:8px 10px;
+    border-radius:10px; cursor:pointer; margin-bottom:4px;
+    transition:all 0.2s; border-left:3px solid transparent;
+  }
+  .ip-item:hover { background:#f5f1ea; transform:translateX(2px); }
+  .ip-item.active { background:#e8f0ed; border-left:3px solid #2d6a4f; }
+  .ip-avatar {
+    width:36px; height:36px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; color:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  }
+  /* IP 头像换成城市实拍图 */
+  .ip-item[data-ip] .ip-avatar {
+    background-size:cover !important; background-position:center;
+    color:transparent; border:2px solid rgba(255,255,255,0.9);
+    transition:transform 0.25s, box-shadow 0.25s;
+  }
+  .ip-item:hover .ip-avatar { transform:scale(1.12); box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+  .ip-item[data-ip="sichuan"] .ip-avatar { background-image:url('images/sichuan.jpg') !important; }
+  .ip-item[data-ip="chongqing"] .ip-avatar { background-image:url('images/chongqing.jpg') !important; }
+  .ip-item[data-ip="chengdu"] .ip-avatar { background-image:url('images/chengdu.jpg') !important; }
+  .ip-item[data-ip="meishan"] .ip-avatar { background-image:url('images/meishan.jpg') !important; }
+  .ip-item[data-ip="leshan"] .ip-avatar { background-image:url('images/leshan.jpg') !important; }
+  .ip-item[data-ip="yibin"] .ip-avatar { background-image:url('images/yibin.jpg') !important; }
+  .ip-item[data-ip="zigong"] .ip-avatar { background-image:url('images/zigong.jpg') !important; }
+  .ip-item[data-ip="mianyang"] .ip-avatar { background-image:url('images/mianyang.jpg') !important; }
+  .ip-item[data-ip="nanchong"] .ip-avatar { background-image:url('images/nanchong.jpg') !important; }
+  .ip-item[data-ip="chongqing_county"] .ip-avatar { background-image:url('images/county.jpg') !important; }
+  .ip-item[data-ip="beijing"] .ip-avatar { background-image:url('images/beijing.jpg') !important; }
+  .ip-item[data-ip="xian"] .ip-avatar { background-image:url('images/xian.jpg') !important; }
+  .ip-item[data-ip="luoyang"] .ip-avatar { background-image:url('images/luoyang.jpg') !important; }
+  .ip-item[data-ip="shanghai"] .ip-avatar { background-image:url('images/shanghai.jpg') !important; }
+  .ip-item[data-ip="hangzhou"] .ip-avatar { background-image:url('images/hangzhou.jpg') !important; }
+  .ip-item[data-ip="suzhou"] .ip-avatar { background-image:url('images/suzhou.jpg') !important; }
+  .ip-item[data-ip="nanjing"] .ip-avatar { background-image:url('images/nanjing.jpg') !important; }
+  .ip-item[data-ip="qingdao"] .ip-avatar { background-image:url('images/qingdao.jpg') !important; }
+  .ip-item[data-ip="guangzhou"] .ip-avatar { background-image:url('images/guangzhou.jpg') !important; }
+  .ip-item[data-ip="xiamen"] .ip-avatar { background-image:url('images/xiamen.jpg') !important; }
+  .ip-item[data-ip="sanya"] .ip-avatar { background-image:url('images/sanya.jpg') !important; }
+  .ip-item[data-ip="guilin"] .ip-avatar { background-image:url('images/guilin.jpg') !important; }
+  .ip-item[data-ip="changsha"] .ip-avatar { background-image:url('images/changsha.jpg') !important; }
+  .ip-item[data-ip="wuhan"] .ip-avatar { background-image:url('images/wuhan.jpg') !important; }
+  .ip-item[data-ip="zhangjiajie"] .ip-avatar { background-image:url('images/zhangjiajie.jpg') !important; }
+  .ip-item[data-ip="kunming"] .ip-avatar { background-image:url('images/kunming.jpg') !important; }
+  .ip-item[data-ip="lijiang"] .ip-avatar { background-image:url('images/lijiang.jpg') !important; }
+  .ip-item[data-ip="harbin"] .ip-avatar { background-image:url('images/harbin.jpg') !important; }
+  .ip-item[data-ip="dunhuang"] .ip-avatar { background-image:url('images/dunhuang.jpg') !important; }
+  .ip-item[data-ip="shenyang"] .ip-avatar { background-image:url('images/shenyang.jpg') !important; }
+  .ip-item[data-ip="changchun"] .ip-avatar { background-image:url('images/changchun.jpg') !important; }
+  .ip-item[data-ip="dalian"] .ip-avatar { background-image:url('images/dalian.jpg') !important; }
+  .ip-item[data-ip="tianjin"] .ip-avatar { background-image:url('images/tianjin.jpg') !important; }
+  .ip-item[data-ip="datong"] .ip-avatar { background-image:url('images/datong.jpg') !important; }
+  .ip-item[data-ip="chengde"] .ip-avatar { background-image:url('images/chengde.jpg') !important; }
+  .ip-item[data-ip="beidaihe"] .ip-avatar { background-image:url('images/beidaihe.jpg') !important; }
+  .ip-item[data-ip="hulunbuir"] .ip-avatar { background-image:url('images/hulunbuir.jpg') !important; }
+  .ip-item[data-ip="jinan"] .ip-avatar { background-image:url('images/jinan.jpg') !important; }
+  .ip-item[data-ip="huangshan"] .ip-avatar { background-image:url('images/huangshan.jpg') !important; }
+  .ip-item[data-ip="ningbo"] .ip-avatar { background-image:url('images/ningbo.jpg') !important; }
+  .ip-item[data-ip="nanchang"] .ip-avatar { background-image:url('images/nanchang.jpg') !important; }
+  .ip-item[data-ip="jingdezhen"] .ip-avatar { background-image:url('images/jingdezhen.jpg') !important; }
+  .ip-item[data-ip="fuzhou"] .ip-avatar { background-image:url('images/fuzhou.jpg') !important; }
+  .ip-item[data-ip="zhengzhou"] .ip-avatar { background-image:url('images/zhengzhou.jpg') !important; }
+  .ip-item[data-ip="kaifeng"] .ip-avatar { background-image:url('images/kaifeng.jpg') !important; }
+  .ip-item[data-ip="shenzhen"] .ip-avatar { background-image:url('images/shenzhen.jpg') !important; }
+  .ip-item[data-ip="zhuhai"] .ip-avatar { background-image:url('images/zhuhai.jpg') !important; }
+  .ip-item[data-ip="beihai"] .ip-avatar { background-image:url('images/beihai.jpg') !important; }
+  .ip-item[data-ip="haikou"] .ip-avatar { background-image:url('images/haikou.jpg') !important; }
+  .ip-item[data-ip="guiyang"] .ip-avatar { background-image:url('images/guiyang.jpg') !important; }
+  .ip-item[data-ip="zunyi"] .ip-avatar { background-image:url('images/zunyi.jpg') !important; }
+  .ip-item[data-ip="jiuzhaigou"] .ip-avatar { background-image:url('images/jiuzhaigou.jpg') !important; }
+  .ip-item[data-ip="daocheng"] .ip-avatar { background-image:url('images/daocheng.jpg') !important; }
+  .ip-item[data-ip="lhasa"] .ip-avatar { background-image:url('images/lhasa.jpg') !important; }
+  .ip-item[data-ip="urumqi"] .ip-avatar { background-image:url('images/urumqi.jpg') !important; }
+  .ip-item[data-ip="turpan"] .ip-avatar { background-image:url('images/turpan.jpg') !important; }
+  .ip-item[data-ip="lanzhou"] .ip-avatar { background-image:url('images/lanzhou.jpg') !important; }
+  .ip-item[data-ip="xining"] .ip-avatar { background-image:url('images/xining.jpg') !important; }
+  .ip-item[data-ip="hongkong"] .ip-avatar { background-image:url('images/hongkong.jpg') !important; }
+  .ip-item[data-ip="taiyuan"] .ip-avatar { background-image:url('images/taiyuan.jpg') !important; }
+  .ip-item[data-ip="hohhot"] .ip-avatar { background-image:url('images/hohhot.jpg') !important; }
+  .ip-item[data-ip="shijiazhuang"] .ip-avatar { background-image:url('images/shijiazhuang.jpg') !important; }
+  .ip-item[data-ip="wuxi"] .ip-avatar { background-image:url('images/wuxi.jpg') !important; }
+  .ip-item[data-ip="yangzhou"] .ip-avatar { background-image:url('images/yangzhou.jpg') !important; }
+  .ip-item[data-ip="shaoxing"] .ip-avatar { background-image:url('images/shaoxing.jpg') !important; }
+  .ip-item[data-ip="wenzhou"] .ip-avatar { background-image:url('images/wenzhou.jpg') !important; }
+  .ip-item[data-ip="hefei"] .ip-avatar { background-image:url('images/hefei.jpg') !important; }
+  .ip-item[data-ip="macau"] .ip-avatar { background-image:url('images/macau.jpg') !important; }
+  .ip-item[data-ip="nanning"] .ip-avatar { background-image:url('images/nanning.jpg') !important; }
+  .ip-item[data-ip="xishuangbanna"] .ip-avatar { background-image:url('images/xishuangbanna.jpg') !important; }
+  .ip-item[data-ip="yinchuan"] .ip-avatar { background-image:url('images/yinchuan.jpg') !important; }
+  .ip-item[data-ip="kashgar"] .ip-avatar { background-image:url('images/kashgar.jpg') !important; }
+  .ip-item[data-ip="wuyishan"] .ip-avatar { background-image:url('images/wuyishan.jpg') !important; }
+  .ip-info .name { font-size:13px; font-weight:600; color:#333; }
+  .ip-info .title { font-size:11px; color:#888; }
+  .chat-col { flex:1; display:flex; flex-direction:column; background:#faf8f5; min-width:0; min-height:0; }
+  .ip-header {
+    padding:12px 24px; background:#fff; border-bottom:1px solid #e5e1da;
+    display:flex; align-items:center; gap:14px;
+  }
+  .ip-header .big-avatar {
+    width:48px; height:48px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px; color:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,0.18);
+  }
+  .ip-header .meta .nm { font-size:16px; font-weight:700; color:#1a3a4a; }
+  .ip-header .meta .desc { font-size:12px; color:#888; margin-top:2px; }
+  .ip-header .online { margin-left:auto; font-size:11px; color:#2d6a4f; display:flex; align-items:center; gap:5px; }
+  .ip-header .online::before {
+    content:''; width:8px; height:8px; border-radius:50%; background:#2d6a4f;
+    animation:pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  .messages { flex:1; overflow-y:auto; padding:24px 32px; min-height:0; display:flex; flex-direction:column; align-items:center; }
+  .msg { display:flex; margin-bottom:18px; max-width:68%; width:100%; }
+  .msg.user { margin-left:auto; flex-direction:row-reverse; }
+  .msg .av {
+    width:32px; height:32px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; flex-shrink:0; margin:0 8px;
+  }
+  .msg.assistant .av { background:#2d6a4f; color:#fff; }
+  .msg.user .av { background:#c0392b; color:#fff; }
+  .msg .bubble {
+    padding:16px 22px; border-radius:20px; line-height:1.95; font-size:15px;
+  }
+  .msg.assistant .bubble {
+    background:#fff; border:1px solid #ece7dd; border-top-left-radius:6px; color:#2a2a2a;
+    box-shadow:0 2px 12px rgba(26,58,74,0.05);
+  }
+  .msg.user .bubble { background:linear-gradient(135deg,#1a3a4a,#25593f); color:#fff; border-top-right-radius:6px; box-shadow:0 2px 12px rgba(26,58,74,0.15); }
+  .msg .bubble h3 { font-size:15px; margin:10px 0 6px; color:#2d6a4f; font-family:'Noto Serif SC',serif; }
+  .msg .bubble h4 { font-size:13px; margin:8px 0 4px; color:#c0392b; }
+  .msg .bubble ul,.msg .bubble ol { padding-left:18px; margin:6px 0; }
+  .msg .bubble li { margin:6px 0; }
+  .msg .bubble strong { color:#1a3a4a; }
+  .msg.user .bubble strong { color:#ffd4b8; }
+  .msg .bubble hr { border:none; border-top:1px solid #ddd; margin:12px 0; }
+  .msg .bubble blockquote {
+    border-left:3px solid #2d6a4f; padding:4px 12px; margin:8px 0;
+    background:#f0f7f5; color:#555; font-size:13px;
+  }
+  .input-area {
+    padding:16px 24px; background:#fff; border-top:1px solid #e5e1da;
+    display:flex; gap:10px; align-items:center;
+  }
+  .input-area input {
+    flex:1; padding:12px 18px; border:1px solid #ddd; border-radius:24px;
+    font-size:14px; font-family:inherit; outline:none;
+    transition:border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-area input:focus { border-color:#2d6a4f; box-shadow:0 0 0 3px rgba(45,106,79,0.12); }
+  .input-area button {
+    padding:12px 24px; background:linear-gradient(135deg,#2d6a4f,#1f4d38); color:#fff; border:none;
+    border-radius:24px; font-size:14px; cursor:pointer; font-family:inherit;
+    transition:transform 0.15s, box-shadow 0.2s;
+  }
+  .input-area button:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 4px 12px rgba(45,106,79,0.35); }
+  .input-area button:disabled { background:#aaa; }
+  .typing { display:inline-flex; gap:4px; padding:4px 8px; }
+  .typing span {
+    width:7px; height:7px; background:#2d6a4f; border-radius:50%;
+    animation:bounce 1.4s infinite;
+  }
+  .typing span:nth-child(2){animation-delay:0.2s}
+  .typing span:nth-child(3){animation-delay:0.4s}
+  @keyframes bounce {0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+  .welcome { text-align:center; padding:60px 20px; color:#888; }
+  .welcome h2 { font-family:'Noto Serif SC',serif; font-size:22px; color:#1a5f5a; margin-bottom:8px; }
+  .welcome p { font-size:13px; line-height:1.8; }
+  .sys-msg {
+    text-align:center; margin:16px 0; font-size:12px; color:#888;
+  }
+
+  /* ========== 非遗互动馆 ========== */
+  .heritage-overlay {
+    position:fixed; inset:0; background:rgba(20,30,40,0.55);
+    z-index:100; display:none; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+  }
+  .heritage-overlay.show { display:flex; }
+  .heritage-panel {
+    width:92vw; height:88vh; background:#faf8f5; border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    display:flex; flex-direction:column; overflow:hidden;
+    animation:panelIn 0.25s ease-out;
+  }
+  @keyframes panelIn { from { transform:scale(0.95); opacity:0; } to { transform:scale(1); opacity:1; } }
+  .heritage-head {
+    padding:18px 28px; background:linear-gradient(90deg,#16303e,#25593f);
+    color:#fff; display:flex; align-items:center; justify-content:space-between;
+  }
+  .heritage-head h2 { font-family:'Noto Serif SC',serif; font-size:20px; letter-spacing:2px; }
+  .heritage-head .close-btn {
+    background:rgba(255,255,255,0.15); border:none; color:#fff;
+    width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px;
+    transition:all 0.2s;
+  }
+  .heritage-head .close-btn:hover { background:rgba(255,255,255,0.3); transform:rotate(90deg); }
+  .heritage-body { flex:1; overflow-y:auto; padding:28px; }
+
+  /* 九宫格 */
+  .grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+  }
+  .h-card {
+    background:#fff; border-radius:14px; padding:10px; cursor:pointer;
+    border:1px solid #ece7dd; transition:all 0.25s; text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:6px; overflow:hidden;
+  }
+  .h-card:hover { transform:translateY(-5px); box-shadow:0 12px 28px rgba(45,106,79,0.22); border-color:#2d6a4f; }
+  .h-card .h-img { width:100%; height:110px; border-radius:9px; overflow:hidden; margin-bottom:2px; }
+  .h-card .h-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; display:block; }
+  .h-card:hover .h-img img { transform:scale(1.1); }
+  .h-card .h-img { position:relative; background:linear-gradient(135deg,#e8e3dc,#d5d0c8); }
+  .h-card .h-img[data-fb]::before {
+    content: attr(data-fb); position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center; font-size:46px;
+  }
+  .h-card .emoji { font-size:42px; line-height:1; display:none; }
+  .h-card .nm { font-family:'Noto Serif SC',serif; font-size:17px; font-weight:700; color:#1a3a4a; }
+  .h-card .ct { font-size:11px; color:#c0392b; }
+  .h-card .tg { font-size:12px; color:#888; }
+
+  /* 详情视图 */
+  #hGridView { display:none; }
+  #hGridView.show { display:block; }
+  .h-detail { display:none; }
+  .h-detail.show { display:block; }
+  .h-back {
+    background:none; border:none; color:#2d6a4f; font-size:14px;
+    cursor:pointer; margin-bottom:12px; font-family:inherit;
+  }
+  .h-hero {
+    display:flex; gap:24px; align-items:center; background:#fff;
+    border-radius:14px; padding:24px; border:1px solid #ece7dd;
+    box-shadow:0 2px 10px rgba(26,58,74,0.06);
+  }
+  .h-stage {
+    width:280px; height:220px; flex-shrink:0; background:linear-gradient(135deg,#f0f7f5,#f5f1ea);
+    border-radius:10px; display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .h-hero-info { flex:1; }
+  .h-hero-info h3 { font-family:'Noto Serif SC',serif; font-size:26px; color:#1a3a4a; margin-bottom:6px; }
+  .h-hero-info .meta { color:#c0392b; font-size:13px; margin-bottom:12px; }
+  .h-hero-info p { color:#444; line-height:1.8; font-size:14px; }
+  .h-interact {
+    margin-top:16px; display:inline-block; padding:8px 20px;
+    background:linear-gradient(135deg,#c0392b,#96281b);
+    color:#fff; border:none; border-radius:20px; cursor:pointer; font-size:13px; font-family:inherit;
+    transition:all 0.2s; box-shadow:0 3px 8px rgba(192,57,43,0.3);
+    animation:btnGlowR 2.2s ease-in-out infinite;
+  }
+  @keyframes btnGlowR {
+    0%,100% { box-shadow:0 3px 8px rgba(192,57,43,0.30); }
+    50% { box-shadow:0 3px 22px rgba(192,57,43,0.62); }
+  }
+  .h-interact:hover { transform:translateY(-1px); box-shadow:0 5px 14px rgba(192,57,43,0.45); animation-play-state:paused; }
+  .h-facts {
+    margin-top:20px; background:#fff; border-radius:14px; padding:22px 26px;
+    border:1px solid #ece7dd; box-shadow:0 2px 10px rgba(26,58,74,0.06);
+  }
+  .h-facts h4 {
+    color:#1a3a4a; font-family:'Noto Serif SC',serif; margin-bottom:6px; font-size:16px;
+    display:flex; align-items:center; gap:8px;
+    border-left:4px solid #c0392b; padding-left:10px;
+  }
+  .h-facts ul { list-style:none; padding:0; margin:8px 0 0; }
+  .h-facts li {
+    position:relative; padding:10px 4px 10px 22px;
+    color:#3d3d3d; line-height:1.75; font-size:14px;
+    border-bottom:1px dashed #ece7dd;
+  }
+  .h-facts li:last-child { border-bottom:none; }
+  .h-facts li::before {
+    content:"◆"; position:absolute; left:2px; top:13px;
+    color:#c0392b; font-size:9px;
+  }
+  .h-ask {
+    margin-top:20px; text-align:center;
+  }
+  .h-ask button {
+    padding:12px 32px; background:linear-gradient(135deg,#2d6a4f,#1f4d3a); color:#fff; border:none;
+    border-radius:24px; font-size:14px; cursor:pointer; font-family:inherit;
+    transition:all 0.2s; box-shadow:0 3px 10px rgba(45,106,79,0.3);
+    animation:btnGlowG 2.6s ease-in-out infinite;
+  }
+  @keyframes btnGlowG {
+    0%,100% { box-shadow:0 3px 10px rgba(45,106,79,0.30); }
+    50% { box-shadow:0 3px 24px rgba(45,106,79,0.60); }
+  }
+  .h-ask button:hover { transform:translateY(-1px); box-shadow:0 5px 16px rgba(45,106,79,0.45); animation-play-state:paused; }
+
+  /* 互动动画元素 */
+  /* 变脸 */
+  .mask-face { width:140px; height:170px; transition:all 0.3s; }
+  /* 龙灯 */
+  .dragon-lamp { display:flex; gap:6px; }
+  .dragon-lamp .lamp {
+    width:22px; height:22px; border-radius:50%; background:#ccc;
+    transition:all 0.3s;
+  }
+  .dragon-lamp .lamp.on { background:#e67e22; box-shadow:0 0 12px #e67e22; }
+  /* 篝火 */
+  .fire { position:relative; width:80px; height:120px; }
+  .fire .flame {
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:40px; height:80px; background:radial-gradient(circle,#f39c12 0%,#e74c3c 70%,transparent 100%);
+    border-radius:50% 50% 20% 20%; opacity:0.3; transition:opacity 0.3s;
+  }
+  .fire.on .flame { animation:flicker 0.6s infinite alternate; opacity:1; }
+  @keyframes flicker { from { transform:translateX(-50%) scaleY(1); } to { transform:translateX(-50%) scaleY(1.15) scaleX(0.9); } }
+  /* 扎染 */
+  .tie-dye {
+    width:140px; height:140px; border-radius:50%; background:#fff;
+    border:2px solid #ddd; position:relative; overflow:hidden;
+  }
+  .tie-dye .blob {
+    position:absolute; inset:20%; border-radius:50%;
+    background:radial-gradient(circle,#2c3e50 0%,#34495e 60%,transparent 100%);
+    transform:scale(0); transition:transform 0.8s;
+  }
+  .tie-dye.on .blob { transform:scale(3); }
+  /* 扇骨 */
+  .fan { width:180px; height:120px; }
+  .fan .blade { transform-origin:bottom center; transform:rotate(-90deg); transition:transform 0.4s; }
+  .fan.on .blade { transform:rotate(0deg); }
+  /* 针脚 */
+  .stitch-line { stroke-dasharray:100; stroke-dashoffset:100; transition:stroke-dashoffset 1s; }
+  .stitch.on .stitch-line { stroke-dashoffset:0; }
+  /* 号子波纹 */
+  .wave-bar {
+    display:inline-block; width:6px; background:#2d6a4f; margin:0 2px;
+    height:10px; transition:height 0.2s; vertical-align:bottom;
+  }
+  /* 龙灯串 */
+  .lantern-chain { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .lantern-chain .l {
+    width:18px; height:24px; background:#ddd; border-radius:4px 4px 8px 8px;
+    transition:all 0.3s;
+  }
+  .lantern-chain .l.on { background:#e74c3c; box-shadow:0 0 10px #e74c3c; }
+
+  /* ========== 团建表单 ========== */
+  .team-overlay {
+    position:fixed; inset:0; background:rgba(20,30,40,0.55);
+    z-index:110; display:none; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+  }
+  .team-overlay.show { display:flex; }
+  .team-panel {
+    width:520px; max-height:90vh; overflow-y:auto; background:#faf8f5;
+    border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    animation:panelIn 0.25s ease-out;
+  }
+  .team-head {
+    padding:18px 28px; background:linear-gradient(90deg,#1a3a4a,#2d6a4f);
+    color:#fff; display:flex; align-items:center; justify-content:space-between;
+    border-radius:16px 16px 0 0;
+  }
+  .team-head h2 { font-family:'Noto Serif SC',serif; font-size:19px; letter-spacing:1px; }
+  .team-head .close-btn {
+    background:rgba(255,255,255,0.15); border:none; color:#fff;
+    width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:15px;
+  }
+  .team-body { padding:24px 28px; }
+  .team-field { margin-bottom:16px; }
+  .team-field label {
+    display:block; font-size:13px; color:#1a3a4a; font-weight:600; margin-bottom:6px;
+  }
+  .team-field label .req { color:#c0392b; }
+  .team-field input, .team-field select {
+    width:100%; padding:10px 12px; border:1px solid #d5d0c8; border-radius:8px;
+    font-size:14px; font-family:inherit; background:#fff; outline:none;
+  }
+  .team-field input:focus, .team-field select:focus { border-color:#2d6a4f; }
+  .team-row { display:flex; gap:12px; }
+  .team-row .team-field { flex:1; }
+  .team-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .team-chip {
+    padding:6px 14px; border:1px solid #d5d0c8; border-radius:16px;
+    font-size:12px; cursor:pointer; background:#fff; color:#555; user-select:none;
+  }
+  .team-chip.on { background:#2d6a4f; color:#fff; border-color:#2d6a4f; }
+  .team-submit {
+    width:100%; padding:13px; background:#c0392b; color:#fff; border:none;
+    border-radius:24px; font-size:15px; cursor:pointer; font-family:inherit; margin-top:8px;
+  }
+  .team-submit:hover { background:#a93226; }
+
+  /* ========== 预算测算 ========== */
+  .budget-result { margin-top:16px; display:none; }
+  .budget-result table { width:100%; border-collapse:collapse; font-size:14px; }
+  .budget-result th, .budget-result td {
+    padding:9px 10px; border-bottom:1px solid #e8e3dc; text-align:left;
+  }
+  .budget-result th { color:#1a3a4a; font-weight:600; width:40%; }
+  .budget-result .total-row td { font-weight:700; color:#c0392b; border-top:2px solid #2d6a4f; }
+  .budget-note { font-size:12px; color:#8a857d; margin-top:10px; line-height:1.6; }
+
+  /* ========== 非遗文化墙（主界面第三栏） ========== */
+  .heritage-rail {
+    width:290px; flex-shrink:0; display:flex; flex-direction:column;
+    background:linear-gradient(180deg,#f7f0e2 0%,#fbf7ee 100%);
+    border-left:1px solid #e5d9c2; min-height:0;
+  }
+  .hr-head {
+    padding:16px 18px 12px; background:linear-gradient(120deg,#1a3a4a,#2d6a4f); color:#fff;
+  }
+  .hr-title { font-family:'Noto Serif SC',serif; font-size:18px; letter-spacing:2px; font-weight:700; }
+  .hr-sub { font-size:11px; opacity:0.82; margin-top:4px; }
+  .hr-list { flex:1; overflow-y:auto; padding:14px 14px 8px; }
+  .hr-card {
+    background:#fff; border-radius:12px; padding:12px 14px; margin-bottom:12px;
+    cursor:pointer; border:1px solid #eee3cf; box-shadow:0 3px 10px rgba(120,90,40,0.08);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .hr-card:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(120,90,40,0.16); }
+  .hr-card .hrc-top { display:flex; align-items:center; gap:10px; }
+  .hr-card .hrc-emoji {
+    width:42px; height:42px; border-radius:10px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+    background:linear-gradient(135deg,#f3e2c7,#e8d3ad);
+  }
+  .hr-card .hrc-name { font-size:15px; font-weight:700; color:#1a3a4a; }
+  .hr-card .hrc-loc { font-size:11px; color:#c0392b; margin-top:2px; }
+  .hr-card .hrc-desc { font-size:12px; color:#6b6355; line-height:1.6; margin-top:8px; }
+  .hr-more {
+    margin:8px 14px 16px; padding:10px; text-align:center; font-size:13px; color:#fff;
+    background:linear-gradient(120deg,#c0392b,#d35400); border-radius:10px; cursor:pointer; font-weight:600;
+  }
+  .hr-more:hover { filter:brightness(1.08); }
+
+  /* ========== 路况地图面板 ========== */
+  .traffic-overlay { position:fixed; inset:0; background:rgba(20,30,25,0.55); display:none; align-items:center; justify-content:center; z-index:120; }
+  .traffic-overlay.show { display:flex; }
+  .traffic-panel { width:min(1080px,94vw); height:min(680px,88vh); background:#fff; border-radius:14px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+  .traffic-head { background:linear-gradient(90deg,#16303e,#25593f); color:#fff; padding:14px 22px; display:flex; align-items:center; justify-content:space-between; }
+  .traffic-head h2 { font-family:'Noto Serif SC',serif; font-size:19px; letter-spacing:1px; }
+  .traffic-head .close-btn { background:rgba(255,255,255,0.15); border:none; color:#fff; width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:14px; }
+  .traffic-body { flex:1; display:flex; min-height:0; }
+  .traffic-map { flex:1; min-width:0; background:#e8e4dc; }
+  .traffic-side { width:300px; flex-shrink:0; border-left:1px solid #e5e1da; padding:18px; overflow-y:auto; }
+  .traffic-side h3 { font-size:14px; color:#1a3a4a; margin:0 0 10px; font-family:'Noto Serif SC',serif; }
+  .weather-card { background:linear-gradient(135deg,#eaf3ee,#f4efe6); border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:13px; line-height:1.8; color:#333; }
+  .cong-item { font-size:12.5px; color:#444; padding:8px 10px; border-left:3px solid #e67e22; background:#fdf6ec; border-radius:0 8px 8px 0; margin-bottom:8px; line-height:1.6; }
+  .cong-item.free { border-left-color:#27ae60; background:#eef7f0; }
+  .traffic-legend { display:flex; gap:12px; font-size:11px; color:#666; margin-top:10px; flex-wrap:wrap; }
+  .traffic-legend span::before { content:'●'; margin-right:4px; }
+  .lg-free::before { color:#27ae60; } .lg-slow::before { color:#f39c12; } .lg-jam::before { color:#c0392b; }
+
+  /* ========== 政务合规 footer ========== */
+  .gov-footer {
+    min-height:38px; line-height:1.5; flex-shrink:0;
+    background:#16303e color:rgba(255,255,255,0.85);
+    font-size:13px; text-align:center; padding:6px 16px;
+    letter-spacing:0.3px;
+    border-top:2px solid #e74c3c;
+  }
+  .gov-footer a { color:#a8d5ba; text-decoration:none; cursor:pointer; }
+  .gov-footer a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<!-- 启动欢迎屏 -->
+<div class="splash" id="splash">
+  <div class="splash-brand">城 知 文 旅</div>
+  <div class="splash-title" id="splashTitle">城知</div>
+  <div class="splash-sub">全 国 文 旅 · 你 的 接 待 官</div>
+  <div class="splash-divider"></div>
+  <div class="splash-tagline">不推网红打卡 · 只讲真实好去处<br>帮你把行程算明白</div>
+  <button class="splash-btn" onclick="document.getElementById('splash').classList.add('hidden');setTimeout(()=>{try{applyIP('master',false)}catch(e){}},900);setTimeout(()=>{var s=document.getElementById('splash');if(s)s.style.display='none'},1000)">开始对话</button>
+  <div class="splash-hint">下滑或点击按钮进入</div>
+</div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="seal">城</div>
+    <div>
+      <h1>城知</h1>
+      <div class="tag">文旅智能对话系统</div>
+    </div>
+  </div>
+  <div class="province-bar">
+    <div class="province-chip active" onclick="switchProvince('四川')">🏔️ 四川</div>
+    <div class="province-chip" onclick="switchProvince('重庆')">🏙️ 重庆</div>
+  </div>
+  <div class="actions">
+    <button class="action-btn" onclick="toggleSidebar()" id="menuBtn">☰ 菜单</button>
+  </div>
+</div>
+
+<!-- 侧边功能栏（可收起） -->
+<div class="side-overlay" id="sideOverlay" onclick="toggleSidebar()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="side-head">
+    <strong>功能菜单</strong>
+    <span style="cursor:pointer;font-size:20px" onclick="toggleSidebar()">✕</span>
+  </div>
+  <button class="side-item" onclick="openTeamForm();toggleSidebar()">🏢 团建方案</button>
+  <button class="side-item" onclick="openBudgetForm();toggleSidebar()">💰 预算测算</button>
+  <button class="side-item" onclick="openHeritage();toggleSidebar()">🎭 非遗文化</button>
+  <button class="side-item" onclick="openTraffic();toggleSidebar()">🗺️ 实时路况</button>
+  <button class="side-item" onclick="openStroll();toggleSidebar()">🚶 逛一逛</button>
+  <button class="side-item" onclick="exportMarkdown();toggleSidebar()">📥 导出对话</button>
+  <div style="flex:1"></div>
+  <button class="side-item" style="background:#c0392b;color:#fff" onclick="resetChat();toggleSidebar()">🔄 开启新对话</button>
+</div>
+
+<div class="main">
+  <!-- 竹叶装饰：若隐若现，轻轻摇摆 -->
+  <div class="bamboo-deco" style="top:8%;left:2%;font-size:80px;animation-delay:0s;opacity:0.07">🎋</div>
+  <div class="bamboo-deco" style="top:60%;left:1%;font-size:50px;animation-delay:2s;opacity:0.06">🎋</div>
+  <div class="bamboo-deco" style="top:20%;right:3%;font-size:70px;animation-delay:1s;opacity:0.07">🎋</div>
+  <div class="bamboo-deco" style="top:70%;right:2%;font-size:45px;animation-delay:3s;opacity:0.06">🎋</div>
+  <div class="bamboo-deco" style="top:45%;left:50%;font-size:35px;animation-delay:4s;opacity:0.05">🍃</div>
+  <div class="bamboo-deco" style="top:15%;left:40%;font-size:28px;animation-delay:2.5s;opacity:0.05">🍃</div>
+  <div class="bamboo-deco" style="top:80%;left:30%;font-size:30px;animation-delay:5s;opacity:0.05">🍃</div>
+  <div class="ip-sidebar">
+    <div class="ip-group">
+      <div class="ip-group-label">总控台</div>
+      <div class="ip-item" data-ip="master" onclick="selectIP('master')" style="background:linear-gradient(90deg,#1a3a4a22,transparent);border-left:3px solid #1a3a4a">
+        <div class="ip-avatar" style="background:#1a3a4a;background-image:url('images/master.jpg');background-size:cover;background-position:center">知</div>
+        <div class="ip-info"><div class="name">小知·总控官</div><div class="title">全局调度 · 默认对话</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">省级接待官</div>
+      <div class="ip-item" data-ip="sichuan" onclick="selectIP('sichuan')">
+        <div class="ip-avatar" style="background:#2d6a4f">川</div>
+        <div class="ip-info"><div class="name">川川</div><div class="title">四川省级接待官</div></div>
+      </div>
+      <div class="ip-item" data-ip="chongqing" onclick="selectIP('chongqing')">
+        <div class="ip-avatar" style="background:#c0392b">渝</div>
+        <div class="ip-info"><div class="name">渝渝</div><div class="title">重庆省级接待官</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">成都平原圈</div>
+      <div class="ip-item" data-ip="chengdu" onclick="selectIP('chengdu')">
+        <div class="ip-avatar" style="background:#e67e22">蓉</div>
+        <div class="ip-info"><div class="name">蓉蓉</div><div class="title">成都 · 休闲之都</div></div>
+      </div>
+      <div class="ip-item" data-ip="meishan" onclick="selectIP('meishan')">
+        <div class="ip-avatar" style="background:#16a085">苏</div>
+        <div class="ip-info"><div class="name">苏苏</div><div class="title">眉山 · 东坡故里</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">川南</div>
+      <div class="ip-item" data-ip="leshan" onclick="selectIP('leshan')">
+        <div class="ip-avatar" style="background:#8e44ad">佛</div>
+        <div class="ip-info"><div class="name">山山</div><div class="title">乐山 · 大佛之城</div></div>
+      </div>
+      <div class="ip-item" data-ip="yibin" onclick="selectIP('yibin')">
+        <div class="ip-avatar" style="background:#2980b9">酒</div>
+        <div class="ip-info"><div class="name">酒仙</div><div class="title">宜宾 · 酒香之城</div></div>
+      </div>
+      <div class="ip-item" data-ip="zigong" onclick="selectIP('zigong')">
+        <div class="ip-avatar" style="background:#d35400">灯</div>
+        <div class="ip-info"><div class="name">灯灯</div><div class="title">自贡 · 恐龙灯城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">川北 / 川东北</div>
+      <div class="ip-item" data-ip="mianyang" onclick="selectIP('mianyang')">
+        <div class="ip-avatar" style="background:#7f8c8d">绵</div>
+        <div class="ip-info"><div class="name">绵宝</div><div class="title">绵阳 · 科技之城</div></div>
+      </div>
+      <div class="ip-item" data-ip="nanchong" onclick="selectIP('nanchong')">
+        <div class="ip-avatar" style="background:#c0392b">充</div>
+        <div class="ip-info"><div class="name">充充</div><div class="title">南充 · 嘉陵古城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">重庆区县</div>
+      <div class="ip-item" data-ip="chongqing_county" onclick="selectIP('chongqing_county')">
+        <div class="ip-avatar" style="background:#34495e">县</div>
+        <div class="ip-info"><div class="name">渝县</div><div class="title">重庆区县 · 山水江城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华北 · 西北</div>
+      <div class="ip-item" data-ip="beijing" onclick="selectIP('beijing')">
+        <div class="ip-avatar" style="background:#c0392b">京</div>
+        <div class="ip-info"><div class="name">京京</div><div class="title">北京 · 帝都</div></div>
+      </div>
+      <div class="ip-item" data-ip="xian" onclick="selectIP('xian')">
+        <div class="ip-avatar" style="background:#b8860b">陕</div>
+        <div class="ip-info"><div class="name">西西</div><div class="title">西安 · 古都长安</div></div>
+      </div>
+      <div class="ip-item" data-ip="luoyang" onclick="selectIP('luoyang')">
+        <div class="ip-avatar" style="background:#e91e63">洛</div>
+        <div class="ip-info"><div class="name">洛洛</div><div class="title">洛阳 · 牡丹花城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华东</div>
+      <div class="ip-item" data-ip="shanghai" onclick="selectIP('shanghai')">
+        <div class="ip-avatar" style="background:#16324f">沪</div>
+        <div class="ip-info"><div class="name">沪沪</div><div class="title">上海 · 魔都</div></div>
+      </div>
+      <div class="ip-item" data-ip="hangzhou" onclick="selectIP('hangzhou')">
+        <div class="ip-avatar" style="background:#2e8b57">杭</div>
+        <div class="ip-info"><div class="name">杭杭</div><div class="title">杭州 · 西湖韵味</div></div>
+      </div>
+      <div class="ip-item" data-ip="suzhou" onclick="selectIP('suzhou')">
+        <div class="ip-avatar" style="background:#6a8e4f">苏</div>
+        <div class="ip-info"><div class="name">园园</div><div class="title">苏州 · 园林之城</div></div>
+      </div>
+      <div class="ip-item" data-ip="nanjing" onclick="selectIP('nanjing')">
+        <div class="ip-avatar" style="background:#8b0000">宁</div>
+        <div class="ip-info"><div class="name">宁宁</div><div class="title">南京 · 金陵</div></div>
+      </div>
+      <div class="ip-item" data-ip="qingdao" onclick="selectIP('qingdao')">
+        <div class="ip-avatar" style="background:#1e90ff">岛</div>
+        <div class="ip-info"><div class="name">岛岛</div><div class="title">青岛 · 海滨</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华南</div>
+      <div class="ip-item" data-ip="guangzhou" onclick="selectIP('guangzhou')">
+        <div class="ip-avatar" style="background:#ff6f00">穗</div>
+        <div class="ip-info"><div class="name">穗穗</div><div class="title">广州 · 羊城</div></div>
+      </div>
+      <div class="ip-item" data-ip="xiamen" onclick="selectIP('xiamen')">
+        <div class="ip-avatar" style="background:#00bcd4">鹭</div>
+        <div class="ip-info"><div class="name">鹭鹭</div><div class="title">厦门 · 海上花园</div></div>
+      </div>
+      <div class="ip-item" data-ip="sanya" onclick="selectIP('sanya')">
+        <div class="ip-avatar" style="background:#00897b">椰</div>
+        <div class="ip-info"><div class="name">森森</div><div class="title">三亚 · 天涯海角</div></div>
+      </div>
+      <div class="ip-item" data-ip="guilin" onclick="selectIP('guilin')">
+        <div class="ip-avatar" style="background:#33691e">桂</div>
+        <div class="ip-info"><div class="name">林林</div><div class="title">桂林 · 山水甲天下</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华中</div>
+      <div class="ip-item" data-ip="changsha" onclick="selectIP('changsha')">
+        <div class="ip-avatar" style="background:#e53935">长</div>
+        <div class="ip-info"><div class="name">沙沙</div><div class="title">长沙 · 星城</div></div>
+      </div>
+      <div class="ip-item" data-ip="wuhan" onclick="selectIP('wuhan')">
+        <div class="ip-avatar" style="background:#3949ab">汉</div>
+        <div class="ip-info"><div class="name">汉汉</div><div class="title">武汉 · 江城</div></div>
+      </div>
+      <div class="ip-item" data-ip="zhangjiajie" onclick="selectIP('zhangjiajie')">
+        <div class="ip-avatar" style="background:#4e342e">界</div>
+        <div class="ip-info"><div class="name">界界</div><div class="title">张家界 · 奇峰</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">滇西北</div>
+      <div class="ip-item" data-ip="kunming" onclick="selectIP('kunming')">
+        <div class="ip-avatar" style="background:#f9a825">滇</div>
+        <div class="ip-info"><div class="name">明明</div><div class="title">昆明 · 春城</div></div>
+      </div>
+      <div class="ip-item" data-ip="lijiang" onclick="selectIP('lijiang')">
+        <div class="ip-avatar" style="background:#5e35b1">丽</div>
+        <div class="ip-info"><div class="name">江江</div><div class="title">丽江 · 古城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">东北 · 丝路</div>
+      <div class="ip-item" data-ip="harbin" onclick="selectIP('harbin')">
+        <div class="ip-avatar" style="background:#4fc3f7">哈</div>
+        <div class="ip-info"><div class="name">滨滨</div><div class="title">哈尔滨 · 冰城</div></div>
+      </div>
+      <div class="ip-item" data-ip="dunhuang" onclick="selectIP('dunhuang')">
+        <div class="ip-avatar" style="background:#bf360c">敦</div>
+        <div class="ip-info"><div class="name">敦敦</div><div class="title">敦煌 · 飞天</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">东北三省</div>
+      <div class="ip-item" data-ip="shenyang" onclick="selectIP('shenyang')">
+        <div class="ip-avatar" style="background:#b03a2e">沈</div>
+        <div class="ip-info"><div class="name">沈沈</div><div class="title">沈阳 · 盛京</div></div>
+      </div>
+      <div class="ip-item" data-ip="changchun" onclick="selectIP('changchun')">
+        <div class="ip-avatar" style="background:#27ae60">春</div>
+        <div class="ip-info"><div class="name">春春</div><div class="title">长春 · 车城</div></div>
+      </div>
+      <div class="ip-item" data-ip="dalian" onclick="selectIP('dalian')">
+        <div class="ip-avatar" style="background:#2980b9">连</div>
+        <div class="ip-info"><div class="name">连连</div><div class="title">大连 · 滨城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华北（续）</div>
+      <div class="ip-item" data-ip="tianjin" onclick="selectIP('tianjin')">
+        <div class="ip-avatar" style="background:#34495e">津</div>
+        <div class="ip-info"><div class="name">津津</div><div class="title">天津 · 津门</div></div>
+      </div>
+      <div class="ip-item" data-ip="datong" onclick="selectIP('datong')">
+        <div class="ip-avatar" style="background:#7d6608">同</div>
+        <div class="ip-info"><div class="name">同同</div><div class="title">大同 · 佛都</div></div>
+      </div>
+      <div class="ip-item" data-ip="chengde" onclick="selectIP('chengde')">
+        <div class="ip-avatar" style="background:#1e8449">承</div>
+        <div class="ip-info"><div class="name">承承</div><div class="title">承德 · 避暑山庄</div></div>
+      </div>
+      <div class="ip-item" data-ip="beidaihe" onclick="selectIP('beidaihe')">
+        <div class="ip-avatar" style="background:#48c9b0">浪</div>
+        <div class="ip-info"><div class="name">浪浪</div><div class="title">北戴河 · 海滨</div></div>
+      </div>
+      <div class="ip-item" data-ip="hulunbuir" onclick="selectIP('hulunbuir')">
+        <div class="ip-avatar" style="background:#9a7d0a">原</div>
+        <div class="ip-info"><div class="name">原原</div><div class="title">呼伦贝尔 · 草原</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华东（续）</div>
+      <div class="ip-item" data-ip="jinan" onclick="selectIP('jinan')">
+        <div class="ip-avatar" style="background:#16a085">泉</div>
+        <div class="ip-info"><div class="name">泉泉</div><div class="title">济南 · 泉城</div></div>
+      </div>
+      <div class="ip-item" data-ip="huangshan" onclick="selectIP('huangshan')">
+        <div class="ip-avatar" style="background:#4d5656">峰</div>
+        <div class="ip-info"><div class="name">峰峰</div><div class="title">黄山 · 天下奇山</div></div>
+      </div>
+      <div class="ip-item" data-ip="ningbo" onclick="selectIP('ningbo')">
+        <div class="ip-avatar" style="background:#2471a3">波</div>
+        <div class="ip-info"><div class="name">波波</div><div class="title">宁波 · 商港</div></div>
+      </div>
+      <div class="ip-item" data-ip="nanchang" onclick="selectIP('nanchang')">
+        <div class="ip-avatar" style="background:#c0392b">昌</div>
+        <div class="ip-info"><div class="name">昌昌</div><div class="title">南昌 · 英雄城</div></div>
+      </div>
+      <div class="ip-item" data-ip="jingdezhen" onclick="selectIP('jingdezhen')">
+        <div class="ip-avatar" style="background:#7f8c8d">瓷</div>
+        <div class="ip-info"><div class="name">瓷瓷</div><div class="title">景德镇 · 瓷都</div></div>
+      </div>
+      <div class="ip-item" data-ip="fuzhou" onclick="selectIP('fuzhou')">
+        <div class="ip-avatar" style="background:#229954">榕</div>
+        <div class="ip-info"><div class="name">榕榕</div><div class="title">福州 · 榕城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">中原</div>
+      <div class="ip-item" data-ip="zhengzhou" onclick="selectIP('zhengzhou')">
+        <div class="ip-avatar" style="background:#6c3483">郑</div>
+        <div class="ip-info"><div class="name">郑郑</div><div class="title">郑州 · 商都</div></div>
+      </div>
+      <div class="ip-item" data-ip="kaifeng" onclick="selectIP('kaifeng')">
+        <div class="ip-avatar" style="background:#b9770e">汴</div>
+        <div class="ip-info"><div class="name">汴汴</div><div class="title">开封 · 宋都</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华南（续）</div>
+      <div class="ip-item" data-ip="shenzhen" onclick="selectIP('shenzhen')">
+        <div class="ip-avatar" style="background:#e67e22">鹏</div>
+        <div class="ip-info"><div class="name">鹏鹏</div><div class="title">深圳 · 鹏城</div></div>
+      </div>
+      <div class="ip-item" data-ip="zhuhai" onclick="selectIP('zhuhai')">
+        <div class="ip-avatar" style="background:#17a589">珠</div>
+        <div class="ip-info"><div class="name">珠珠</div><div class="title">珠海 · 百岛</div></div>
+      </div>
+      <div class="ip-item" data-ip="beihai" onclick="selectIP('beihai')">
+        <div class="ip-avatar" style="background:#148f77">滩</div>
+        <div class="ip-info"><div class="name">滩滩</div><div class="title">北海 · 银滩</div></div>
+      </div>
+      <div class="ip-item" data-ip="haikou" onclick="selectIP('haikou')">
+        <div class="ip-avatar" style="background:#d4ac0d">椰</div>
+        <div class="ip-info"><div class="name">椰椰</div><div class="title">海口 · 椰城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">大西南</div>
+      <div class="ip-item" data-ip="guiyang" onclick="selectIP('guiyang')">
+        <div class="ip-avatar" style="background:#1e8449">筑</div>
+        <div class="ip-info"><div class="name">筑筑</div><div class="title">贵阳 · 林城</div></div>
+      </div>
+      <div class="ip-item" data-ip="zunyi" onclick="selectIP('zunyi')">
+        <div class="ip-avatar" style="background:#922b21">义</div>
+        <div class="ip-info"><div class="name">义义</div><div class="title">遵义 · 红城</div></div>
+      </div>
+      <div class="ip-item" data-ip="jiuzhaigou" onclick="selectIP('jiuzhaigou')">
+        <div class="ip-avatar" style="background:#2e86c1">沟</div>
+        <div class="ip-info"><div class="name">沟沟</div><div class="title">九寨沟 · 瑶池</div></div>
+      </div>
+      <div class="ip-item" data-ip="daocheng" onclick="selectIP('daocheng')">
+        <div class="ip-avatar" style="background:#7d3c98">稻</div>
+        <div class="ip-info"><div class="name">稻稻</div><div class="title">稻城亚丁</div></div>
+      </div>
+      <div class="ip-item" data-ip="lhasa" onclick="selectIP('lhasa')">
+        <div class="ip-avatar" style="background:#c99700">萨</div>
+        <div class="ip-info"><div class="name">萨萨</div><div class="title">拉萨 · 日光城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">大西北（续）</div>
+      <div class="ip-item" data-ip="urumqi" onclick="selectIP('urumqi')">
+        <div class="ip-avatar" style="background:#ca6f1e">乌</div>
+        <div class="ip-info"><div class="name">乌乌</div><div class="title">乌鲁木齐 · 天山</div></div>
+      </div>
+      <div class="ip-item" data-ip="turpan" onclick="selectIP('turpan')">
+        <div class="ip-avatar" style="background:#e74c3c">番</div>
+        <div class="ip-info"><div class="name">番番</div><div class="title">吐鲁番 · 火洲</div></div>
+      </div>
+      <div class="ip-item" data-ip="lanzhou" onclick="selectIP('lanzhou')">
+        <div class="ip-avatar" style="background:#21618c">兰</div>
+        <div class="ip-info"><div class="name">兰兰</div><div class="title">兰州 · 金城</div></div>
+      </div>
+      <div class="ip-item" data-ip="xining" onclick="selectIP('xining')">
+        <div class="ip-avatar" style="background:#48c9b0">清</div>
+        <div class="ip-info"><div class="name">清清</div><div class="title">西宁 · 夏都</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">港澳</div>
+      <div class="ip-item" data-ip="hongkong" onclick="selectIP('hongkong')">
+        <div class="ip-avatar" style="background:#2c3e50">港</div>
+        <div class="ip-info"><div class="name">港港</div><div class="title">香港 · 东方之珠</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华北（第三批）</div>
+      <div class="ip-item" data-ip="taiyuan" onclick="selectIP('taiyuan')">
+        <div class="ip-avatar" style="background:#9a7d0a">晋</div>
+        <div class="ip-info"><div class="name">晋晋</div><div class="title">太原 · 晋祠</div></div>
+      </div>
+      <div class="ip-item" data-ip="hohhot" onclick="selectIP('hohhot')">
+        <div class="ip-avatar" style="background:#27ae60">和</div>
+        <div class="ip-info"><div class="name">和和</div><div class="title">呼和浩特 · 青城</div></div>
+      </div>
+      <div class="ip-item" data-ip="shijiazhuang" onclick="selectIP('shijiazhuang')">
+        <div class="ip-avatar" style="background:#7f8c8d">石</div>
+        <div class="ip-info"><div class="name">石石</div><div class="title">石家庄 · 常山</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华东（第三批）</div>
+      <div class="ip-item" data-ip="wuxi" onclick="selectIP('wuxi')">
+        <div class="ip-avatar" style="background:#2980b9">锡</div>
+        <div class="ip-info"><div class="name">锡锡</div><div class="title">无锡 · 太湖</div></div>
+      </div>
+      <div class="ip-item" data-ip="yangzhou" onclick="selectIP('yangzhou')">
+        <div class="ip-avatar" style="background:#16a085">扬</div>
+        <div class="ip-info"><div class="name">扬扬</div><div class="title">扬州 · 淮扬</div></div>
+      </div>
+      <div class="ip-item" data-ip="shaoxing" onclick="selectIP('shaoxing')">
+        <div class="ip-avatar" style="background:#7d6608">兴</div>
+        <div class="ip-info"><div class="name">兴兴</div><div class="title">绍兴 · 水乡</div></div>
+      </div>
+      <div class="ip-item" data-ip="wenzhou" onclick="selectIP('wenzhou')">
+        <div class="ip-avatar" style="background:#d35400">瓯</div>
+        <div class="ip-info"><div class="name">瓯瓯</div><div class="title">温州 · 雁荡</div></div>
+      </div>
+      <div class="ip-item" data-ip="hefei" onclick="selectIP('hefei')">
+        <div class="ip-avatar" style="background:#1e8449">肥</div>
+        <div class="ip-info"><div class="name">肥肥</div><div class="title">合肥 · 包公</div></div>
+      </div>
+      <div class="ip-item" data-ip="wuyishan" onclick="selectIP('wuyishan')">
+        <div class="ip-avatar" style="background:#1e8449">夷</div>
+        <div class="ip-info"><div class="name">夷夷</div><div class="title">武夷山 · 岩茶</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">华南（第三批）</div>
+      <div class="ip-item" data-ip="macau" onclick="selectIP('macau')">
+        <div class="ip-avatar" style="background:#8e44ad">澳</div>
+        <div class="ip-info"><div class="name">澳澳</div><div class="title">澳门 · 赌城</div></div>
+      </div>
+      <div class="ip-item" data-ip="nanning" onclick="selectIP('nanning')">
+        <div class="ip-avatar" style="background:#e67e22">南</div>
+        <div class="ip-info"><div class="name">南南</div><div class="title">南宁 · 绿城</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">西南（第三批）</div>
+      <div class="ip-item" data-ip="xishuangbanna" onclick="selectIP('xishuangbanna')">
+        <div class="ip-avatar" style="background:#c99700">版</div>
+        <div class="ip-info"><div class="name">版版</div><div class="title">西双版纳 · 雨林</div></div>
+      </div>
+    </div>
+    <div class="ip-group">
+      <div class="ip-group-label">西北（第三批）</div>
+      <div class="ip-item" data-ip="yinchuan" onclick="selectIP('yinchuan')">
+        <div class="ip-avatar" style="background:#b9770e">银</div>
+        <div class="ip-info"><div class="name">银银</div><div class="title">银川 · 塞上</div></div>
+      </div>
+      <div class="ip-item" data-ip="kashgar" onclick="selectIP('kashgar')">
+        <div class="ip-avatar" style="background:#ca6f1e">喀</div>
+        <div class="ip-info"><div class="name">喀喀</div><div class="title">喀什 · 西域</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-col">
+    <div class="ip-header">
+      <div class="big-avatar" id="curAv" style="background-image:url('images/sichuan.jpg');background-size:cover;background-position:center"></div>
+      <div class="meta">
+        <div class="nm" id="curName">川川</div>
+        <div class="desc" id="curDesc">四川省级接待官</div>
+      </div>
+      <div class="online">● 在线</div>
+    </div>
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <h2>🏔️ 你好，我是小知</h2>
+        <p>我是城知总控官，你的专属文旅调度助手。<br>
+        告诉我你在哪个城市、想玩几天，我来帮你安排。<br>
+        <span style="font-size:11px;color:#aaa">例如："重庆3天2晚带老人"或"成都到西安怎么走"</span></p>
+      </div>
+    </div>
+    <div id="navBar" style="display:none;padding:6px 12px;background:#e8f4ea;border-top:1px solid #c8e0cc;">
+      <button onclick="openNav()" style="width:100%;padding:10px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">🧭 打开高德地图，一键导航到 <span id="navCity">宜宾</span></button>
+    </div>
+    <div class="input-area">
+      <input type="text" id="input" placeholder="输入你的问题，或点右边麦克风说话..." onkeydown="if(event.key==='Enter')send()">
+      <button id="micBtn" onclick="toggleMic()" title="语音输入" style="background:#27ae60;border:none;border-radius:50%;padding:0;cursor:pointer;margin-right:6px;display:flex;align-items:center;justify-content:center;width:42px;height:42px;box-shadow:0 2px 8px rgba(39,174,96,.4);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+          <path d="M5 10v1a7 7 0 0 0 14 0v-1"></path>
+          <line x1="12" y1="18" x2="12" y2="22"></line>
+        </svg>
+      </button>
+      <button id="sendBtn" onclick="send()">发送</button>
+    </div>
+  </div>
+
+  <!-- 非遗文化墙（独立醒目第三栏） -->
+  <aside class="heritage-rail">
+    <div class="hr-head">
+      <div class="hr-title">🎭 非遗文化墙</div>
+      <div class="hr-sub">指尖上的中国 · 点开任意一项听故事</div>
+    </div>
+    <div class="hr-list" id="hrList"></div>
+    <div class="hr-more" onclick="openHeritage()">查看全部非遗 →</div>
+  </aside>
+</div>
+
+<!-- 政务合规 footer -->
+<div class="gov-footer">
+  <strong>⚠️ 本服务由 AI 生成内容，仅供出行参考，不构成任何承诺。</strong>
+  票价/开放时间以景区官方公告为准 · 对话数据仅用于服务改进，可随时「新对话」清空 ·
+  <a onclick="openPrivacy()">隐私政策</a> · <a onclick="openPrivacy()">用户协议</a><br>
+  © 城知文旅智能服务平台 v4.0 · 渝ICP备XXXXXXXX号 · 技术支持：城知工作室
+</div>
+
+<!-- 隐私政策弹窗 -->
+<div class="team-overlay" id="privacyOverlay">
+  <div class="team-panel">
+    <div class="team-head">
+      <h2>🔒 隐私政策与免责声明</h2>
+      <button class="close-btn" onclick="closePrivacy()">✕</button>
+    </div>
+    <div class="team-body" style="font-size:13px;line-height:1.9;color:#333">
+      <p><b>一、信息说明</b></p>
+      <p>本站由人工智能为您提供文旅咨询服务。所推荐的景点、票价、开放时间、交通及预算信息均来自公开资料与算法估算，<b>不构成任何官方承诺</b>。出行前请以景区、航司、铁路及当地文旅主管部门的官方公告为准。</p>
+      <p><b>二、数据收集与使用</b></p>
+      <p>为持续改进服务质量，本站会在您本机浏览器中保存对话内容与偏好设置（如人数、是否带老人、口味等）。这些数据<b>仅用于本次会话体验与服务优化</b>，不会用于其他用途，也不会向第三方出售。</p>
+      <p><b>三、您的权利</b></p>
+      <p>点击右上角「🔄 新对话」即可清空当前会话记录；清除浏览器站点数据即可彻底删除本地保存的全部信息。</p>
+      <p><b>四、免责条款</b></p>
+      <p>因信息时效、季节变动或不可抗力导致的行程变更、损失，本站不承担法律责任。如遇紧急情况请拨打当地 12345 政务服务热线或景区官方电话。</p>
+    </div>
+  </div>
+</div>
+
+<!-- 路况地图面板 -->
+<div class="traffic-overlay" id="trafficOverlay">
+  <div class="traffic-panel">
+    <div class="traffic-head">
+      <h2>🗺️ 实时路况 · <span id="tCityName">成都</span></h2>
+      <button class="close-btn" onclick="closeTraffic()">✕</button>
+    </div>
+    <div class="traffic-body">
+      <div class="traffic-map" id="trafficMap"></div>
+      <div class="traffic-side">
+        <div class="weather-card" id="tWeather">正在获取天气…</div>
+        <h3>🚦 拥堵路段</h3>
+        <div id="tCong">正在获取实时路况…</div>
+        <div class="traffic-legend">
+          <span class="lg-free">畅通</span>
+          <span class="lg-slow">缓行</span>
+          <span class="lg-jam">拥堵</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 逛一逛 overlay -->
+<div class="stroll-overlay" id="strollOverlay">
+  <div class="stroll-panel">
+    <div class="stroll-head">
+      <div>
+        <h2>🚶 逛一逛</h2>
+        <p id="strollCityLabel" style="font-size:13px;color:#888;margin-top:4px">本地推荐 · 景点/美食/特产</p>
+      </div>
+      <button class="close-btn" onclick="closeStroll()">✕</button>
+    </div>
+    <div class="stroll-grid" id="strollGrid"></div>
+    <!-- 详情视图 -->
+    <div class="stroll-detail" id="strollDetail" style="display:none">
+      <button class="back-btn" onclick="backToStrollGrid()">← 返回列表</button>
+      <div id="strollDetailContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 非遗互动馆 overlay -->
+<div class="heritage-overlay" id="heritageOverlay">
+  <div class="heritage-panel">
+    <div class="heritage-head">
+      <h2>🎭 非遗馆</h2>
+      <button class="close-btn" onclick="closeHeritage()">✕</button>
+    </div>
+    <div class="heritage-body">
+      <!-- 九宫格视图 -->
+      <div id="hGridView">
+        <div class="grid" id="hGrid"></div>
+      </div>
+      <!-- 详情视图 -->
+      <div class="h-detail" id="hDetailView">
+        <button class="h-back" onclick="renderHeritageGrid()">← 返回九宫格</button>
+        <div class="h-hero">
+          <div class="h-stage" id="hStage"></div>
+          <div class="h-hero-info">
+            <h3 id="hDetailName"></h3>
+            <div class="meta" id="hDetailMeta"></div>
+            <p id="hDetailDesc"></p>
+          </div>
+        </div>
+        <div class="h-facts">
+          <h4>💡 你知道吗？</h4>
+          <ul id="hDetailFacts"></ul>
+        </div>
+        <div class="h-ask">
+          <button id="hAskBtn">🤖 问问 AI 接待官更多</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 团建方案表单 overlay -->
+<div class="team-overlay" id="teamOverlay">
+  <div class="team-panel">
+    <div class="team-head">
+      <h2>🏢 智能团建方案</h2>
+      <button class="close-btn" onclick="closeTeamForm()">✕</button>
+    </div>
+    <div class="team-body">
+      <div class="team-row">
+        <div class="team-field">
+          <label>目的地城市 <span class="req">*</span></label>
+          <select id="tCity">
+            <option value="重庆">重庆</option>
+            <option value="成都">成都</option>
+            <option value="乐山">乐山</option>
+            <option value="宜宾">宜宾</option>
+            <option value="绵阳">绵阳</option>
+            <option value="南充">南充</option>
+            <option value="自贡">自贡</option>
+            <option value="眉山">眉山</option>
+            <option value="重庆区县">重庆区县（武隆/大足/酉阳等）</option>
+          </select>
+        </div>
+        <div class="team-field">
+          <label>人数 <span class="req">*</span></label>
+          <input type="number" id="tPeople" value="20" min="5" max="500">
+        </div>
+      </div>
+      <div class="team-row">
+        <div class="team-field">
+          <label>出行日期</label>
+          <input type="date" id="tDate">
+        </div>
+        <div class="team-field">
+          <label>行程天数</label>
+          <select id="tDays">
+            <option value="1天">1天（当日往返）</option>
+            <option value="2天1晚" selected>2天1晚</option>
+            <option value="3天2晚">3天2晚</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="team-field">
+        <label>人均预算（元）</label>
+        <input type="number" id="tBudget" value="800" min="100" step="50">
+      </div>
+      <div class="team-field">
+        <label>团建偏好（可多选）</label>
+        <div class="team-chips" id="tPrefs">
+          <span class="team-chip" data-v="户外拓展">🧗 户外拓展</span>
+          <span class="team-chip" data-v="美食探店">🍜 美食探店</span>
+          <span class="team-chip" data-v="文化体验">🏛️ 文化体验</span>
+          <span class="team-chip" data-v="休闲放松">😌 休闲放松</span>
+          <span class="team-chip" data-v="网红打卡">📸 网红打卡</span>
+          <span class="team-chip" data-v="亲子友好">👨‍👩‍👧 亲子友好</span>
+        </div>
+      </div>
+      <button class="team-submit" onclick="submitTeamForm()">✨ 生成团建方案</button>
+    </div>
+  </div>
+</div>
+
+<!-- 预算测算 overlay -->
+<div class="team-overlay" id="budgetOverlay">
+  <div class="team-panel">
+    <div class="team-head">
+      <h2>💰 旅行预算测算</h2>
+      <button class="close-btn" onclick="closeBudgetForm()">✕</button>
+    </div>
+    <div class="team-body">
+      <div class="team-row">
+        <div class="team-field">
+          <label>目的地城市</label>
+          <input type="text" id="bCity" value="成都" placeholder="如：成都/北京/西安">
+        </div>
+        <div class="team-field">
+          <label>消费档次</label>
+          <select id="bLevel">
+            <option value="经济">经济</option>
+            <option value="舒适" selected>舒适</option>
+            <option value="品质">品质</option>
+          </select>
+        </div>
+      </div>
+      <div class="team-row">
+        <div class="team-field">
+          <label>人数</label>
+          <input type="number" id="bPeople" value="2" min="1" max="500">
+        </div>
+        <div class="team-field">
+          <label>天数</label>
+          <input type="number" id="bDays" value="2" min="1" max="30">
+        </div>
+      </div>
+      <button class="team-submit" onclick="runBudget()">✨ 开始测算</button>
+      <div class="budget-result" id="bResult"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:8000';
+const STREAM_API = API_BASE + '/api/trip/stream';
+
+// ---------- 启动欢迎屏交互 ----------
+(function(){
+  const splash = document.getElementById('splash');
+  const title = document.getElementById('splashTitle');
+  let dismissed = false;
+  function dismiss(){
+    if(dismissed) return; dismissed = true;
+    splash.classList.add('hidden');
+    setTimeout(()=>{ splash.style.display='none'; }, 1000);
+    // 进入主界面后默认切到总控官（master），不默认任何城市
+    try { applyIP('master', false); } catch(e){}
+  }
+  // 鼠标滚轮下滑
+  window.addEventListener('wheel', function(e){
+    if(!dismissed && e.deltaY > 0) dismiss();
+  }, {passive:true});
+  // 触摸下滑
+  let touchStartY = 0;
+  window.addEventListener('touchstart', function(e){
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  window.addEventListener('touchend', function(e){
+    if(dismissed) return;
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    if(dy > 40) dismiss();
+  }, {passive:true});
+  // 点击标题也进入
+  if(title) title.addEventListener('click', dismiss);
+  // 按任意键进入
+  window.addEventListener('keydown', dismiss);
+  // 3.5秒后自动提示可点击
+  setTimeout(()=>{ if(!dismissed && title) title.style.cursor='pointer'; }, 3500);
+})();
+
+// ---------- 侧边功能栏 ----------
+function toggleSidebar(){
+  document.getElementById('sidePanel').classList.toggle('show');
+  document.getElementById('sideOverlay').classList.toggle('show');
+}
+
+// ---------- 逛一逛 ----------
+const STROLL_DATA = {
+  "重庆": [
+    {emoji:"🍜", bg:"linear-gradient(135deg,#f5d7a8,#e8a87c)", name:"花市豌杂面", tag:"小面·早餐", addr:"渝中区大溪沟双钢路", desc:"重庆人早餐头牌，豌豆炖得稀烂，杂酱酱香浓，配个煎蛋是老重庆标配。人均12元，早上6点开门卖到中午。"},
+    {emoji:"🍲", bg:"linear-gradient(135deg,#e8a87c,#c0392b)", name:"社区老火锅", tag:"火锅·本地人", addr:"渝中区领事巷/巴县衙门一带", desc:"藏在老社区里的火锅，锅底是反复熬的老油，毛肚鸭肠黄喉必点。别去洪崖洞附近找，往大溪沟、枇杷山巷子里钻。人均70-90元。"},
+    {emoji:"☕", bg:"linear-gradient(135deg,#d4c5a9,#8b7355)", name:"交通茶馆", tag:"茶馆·文化", addr:"九龙坡区黄桷坪正街", desc:"保留了90年代茶馆模样，盖碗茶15元坐一下午，看本地人下棋打牌，拍出来很有质感。下午2-4点最热闹。"},
+    {emoji:"🌉", bg:"linear-gradient(135deg,#a8c8e8,#2d6a8f)", name:"龙门浩老街", tag:"免费·江景", addr:"南岸区南滨路", desc:"重建的老街但位置好，正对渝中半岛，看江景比洪崖洞人少多了。下午5点后去，灯亮起来好看。免费。"},
+    {emoji:"🥟", bg:"linear-gradient(135deg,#f5d7a8,#e8a87c)", name:"科园三路夜宵", tag:"夜宵·美食", addr:"九龙坡区科园三路", desc:"重庆本地人夜宵聚集地，烤鱼、串串、江湖菜都有。别去景区店，这里的才是本地味道。人均60-80元。"},
+    {emoji:"🌿", bg:"linear-gradient(135deg,#a8d8a8,#2d6a4f)", name:"鹅岭二厂", tag:"文创·拍照", addr:"渝中区鹅岭正街", desc:"旧工厂改造的文创园，有书店、咖啡馆、小展览。比磁器口人少，适合带老人慢慢逛。免费。"},
+  ],
+  "成都": [
+    {emoji:"🐼", bg:"linear-gradient(135deg,#a8d8a8,#2d6a4f)", name:"熊猫基地", tag:"必去·亲子", addr:"成华区熊猫大道", desc:"早上7点半到，熊猫最活跃。园区大，坐观光车省脚力。门票55元，7:30-18:00。"},
+    {emoji:"🍜", bg:"linear-gradient(135deg,#f5d7a8,#e8a87c)", name:"严太婆锅盔", tag:"小吃·排队", addr:"青羊区文殊院街", desc:"现做锅盔夹凉粉，外酥里嫩。文殊院附近一堆小吃，甜水面、钟水饺都有。人均15元。"},
+    {emoji:"🍵", bg:"linear-gradient(135deg,#d4c5a9,#8b7355)", name:"人民公园鹤鸣茶社", tag:"茶馆·慢生活", addr:"青羊区少城路", desc:"成都人的周末，盖碗茶15元，坐一上午看本地人掏耳朵、摆龙门阵。上午去人少。"},
+    {emoji:"🏛️", bg:"linear-gradient(135deg,#e8d8a8,#c9a84c)", name:"杜甫草堂", tag:"人文·免费", addr:"青羊区青华路", desc:"园林幽静，路平适合老人慢走。门票50元，9:00-18:00。地铁4号线草堂北路站。"},
+    {emoji:"🌶️", bg:"linear-gradient(135deg,#e8a87c,#c0392b)", name:"明婷饭店", tag:"川菜·老店", addr:"青羊区曹家巷", desc:"本地人认的苍蝇馆子，脑花、凉面、荷叶酱肉是招牌。环境一般但味道正。人均60元。"},
+    {emoji:"🌅", bg:"linear-gradient(135deg,#a8c8e8,#2d6a8f)", name:"锦里古街", tag:"免费·晚上", addr:"武侯区武侯祠大街", desc:"晚上6点后红灯笼亮起来好看，但人多。顺路逛即可，别在里面买东西。免费。"},
+  ],
+  "master": [
+    {emoji:"🏙️", bg:"linear-gradient(135deg,#a8d8c8,#2d6a4f)", name:"先告诉我你在哪个城市", tag:"引导", addr:"—", desc:"点左侧栏选一个城市，或直接输入框问我'重庆有什么好玩的'，我会自动给你推荐本地的逛吃地方。"},
+  ]
+};
+function getStrollData(){
+  const city = IP_CITY_NAME[currentIP] || "master";
+  return STROLL_DATA[city] || STROLL_DATA["master"];
+}
+function openStroll(){
+  const city = IP_CITY_NAME[currentIP] || "全国";
+  document.getElementById('strollCityLabel').textContent = city + " · 本地推荐 · 景点/美食/特产";
+  // 如果是总控官，显示城市选择按钮
+  const grid = document.getElementById('strollGrid');
+  if(!currentIP || currentIP === "master"){
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;padding:10px 0 16px">
+        <div style="font-size:14px;color:#666;margin-bottom:12px">👆 选择你要逛的城市：</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          ${["重庆","成都"].map(c=>`
+            <button onclick="pickStrollCity('${c}')" style="padding:10px 22px;border-radius:20px;border:1px solid #2d6a4f;background:#fff;color:#2d6a4f;font-size:14px;cursor:pointer">
+              ${c}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else {
+    renderStrollGrid(getStrollData());
+  }
+  document.getElementById('strollDetail').style.display='none';
+  document.getElementById('strollGrid').style.display='grid';
+  document.getElementById('strollOverlay').classList.add('show');
+}
+function pickStrollCity(city){
+  // 根据城市名找到对应 IP
+  const ipMap = {"重庆":"chongqing","成都":"chengdu"};
+  const ip = ipMap[city];
+  if(ip){
+    currentIP = ip;
+    try{ applyIP(ip, false); }catch(e){}
+  }
+  openStroll(); // 重新加载
+}
+function renderStrollGrid(data){
+  const grid = document.getElementById('strollGrid');
+  grid.innerHTML = data.map((it,i)=>`
+    <div class="stroll-card" onclick="showStrollDetail(${i})">
+      <div class="stroll-card-img" style="background:${it.bg}">${it.emoji}</div>
+      <div class="stroll-card-body">
+        <div class="stroll-card-name">${it.name}</div>
+        <span class="stroll-card-tag">${it.tag}</span>
+        <div class="stroll-card-addr">📍 ${it.addr}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function showStrollDetail(i){
+  const data = getStrollData();
+  const it = data[i];
+  document.getElementById('strollGrid').style.display='none';
+  document.getElementById('strollDetail').style.display='block';
+  document.getElementById('strollDetailContent').innerHTML = `
+    <div class="stroll-detail-img" style="background:${it.bg}">${it.emoji}</div>
+    <h3>${it.name}</h3>
+    <span class="stroll-card-tag">${it.tag}</span>
+    <p style="margin-top:12px">📍 地址：${it.addr}</p>
+    <p>${it.desc}</p>
+  `;
+}
+function backToStrollGrid(){
+  document.getElementById('strollDetail').style.display='none';
+  document.getElementById('strollGrid').style.display='grid';
+}
+function closeStroll(){
+  document.getElementById('strollOverlay').classList.remove('show');
+}
+
+// ---------- 会话 ID（localStorage 持久化） ----------
+function getSessionId(){
+  let sid = localStorage.getItem('cz_session_id');
+  if (!sid) {
+    sid = 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+    localStorage.setItem('cz_session_id', sid);
+  }
+  return sid;
+}
+function newSessionId(){
+  const sid = 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+  localStorage.setItem('cz_session_id', sid);
+  return sid;
+}
+
+let currentIP = 'master';
+
+// IP key → 城市中文名（导航按钮、提示语用，不要用昵称）
+const IP_CITY_NAME = {
+  master:'全国', sichuan:'成都', chongqing:'重庆', chongqing_county:'重庆区县',
+  chengdu:'成都', leshan:'乐山', yibin:'宜宾', mianyang:'绵阳', nanchong:'南充',
+  zigong:'自贡', meishan:'眉山', beijing:'北京', xian:'西安', luoyang:'洛阳',
+  shanghai:'上海', hangzhou:'杭州', suzhou:'苏州', nanjing:'南京', qingdao:'青岛',
+  guangzhou:'广州', xiamen:'厦门', sanya:'三亚', guilin:'桂林', changsha:'长沙',
+  wuhan:'武汉', zhangjiajie:'张家界', kunming:'昆明', lijiang:'丽江', harbin:'哈尔滨',
+  dunhuang:'敦煌', shenyang:'沈阳', changchun:'长春', dalian:'大连', tianjin:'天津',
+  datong:'大同', chengde:'承德', beidaihe:'北戴河', hulunbuir:'呼伦贝尔', jinan:'济南',
+  huangshan:'黄山', ningbo:'宁波', nanchang:'南昌', jingdezhen:'景德镇', fuzhou:'福州',
+  zhengzhou:'郑州', kaifeng:'开封', shenzhen:'深圳', zhuhai:'珠海', beihai:'北海',
+  haikou:'海口', guiyang:'贵阳', zunyi:'遵义', jiuzhaigou:'九寨沟', daocheng:'稻城',
+  lhasa:'拉萨', urumqi:'乌鲁木齐', turpan:'吐鲁番', lanzhou:'兰州', xining:'西宁',
+  hongkong:'香港', macau:'澳门', nanning:'南宁', xishuangbanna:'西双版纳',
+  yinchuan:'银川', kashgar:'喀什', wuyishan:'武夷山', taiyuan:'太原', hohhot:'呼和浩特',
+  shijiazhuang:'石家庄', wuxi:'无锡', yangzhou:'扬州', shaoxing:'绍兴', wenzhou:'温州',
+  hefei:'合肥',
+};
+
+const IP_DATA = {
+  master: {name:'小知',av:'知',img:'master',color:'#1a3a4a',title:'城知总控官',role:'你是总控官小知'},
+  sichuan: {name:'川川',av:'川',img:'sichuan',color:'#2d6a4f',title:'四川省级接待官',role:'你是四川省级接待官川川，会用川普，口头禅"要得"'},
+  chongqing: {name:'渝渝',av:'渝',img:'chongqing',color:'#c0392b',title:'重庆省级接待官',role:'你是重庆省级接待官渝渝，热情直爽，口头禅"巴适得板"'},
+  chengdu: {name:'蓉蓉',av:'蓉',img:'chengdu',color:'#e67e22',title:'成都·休闲之都',role:'你是成都IP蓉蓉，熟悉成都美食景点，口头禅"耍安逸"'},
+  leshan: {name:'山山',av:'佛',img:'leshan',color:'#8e44ad',title:'乐山·大佛之城',role:'你是乐山IP山山，熟悉乐山大佛峨眉山美食，性格沉稳'},
+  yibin: {name:'酒仙',av:'酒',img:'yibin',color:'#2980b9',title:'宜宾·酒香之城',role:'你是宜宾IP酒仙，熟悉五粮液蜀南竹海李庄，性格文雅'},
+  mianyang: {name:'绵宝',av:'绵',img:'mianyang',color:'#7f8c8d',title:'绵阳·科技之城',role:'你是绵阳IP绵宝，熟悉两弹城、李白故里、方特，理性热情'},
+  nanchong: {name:'充充',av:'充',img:'nanchong',color:'#c0392b',title:'南充·嘉陵古城',role:'你是南充IP充充，熟悉阆中古城、朱德故里、川北凉粉'},
+  zigong: {name:'灯灯',av:'灯',img:'zigong',color:'#d35400',title:'自贡·恐龙灯城',role:'你是自贡IP灯灯，熟悉恐龙博物馆、灯会、冷吃兔'},
+  meishan: {name:'苏苏',av:'苏',img:'meishan',color:'#16a085',title:'眉山·东坡故里',role:'你是眉山IP苏苏，熟悉三苏祠、瓦屋山、东坡美食'},
+  chongqing_county: {name:'渝县',av:'县',img:'county',color:'#34495e',title:'重庆区县·山水江城',role:'你是重庆区县IP渝县，熟悉武隆、大足、万州、龚滩古镇'},
+  // ===== 全国城市 =====
+  beijing: {name:'京京',av:'京',img:'beijing',color:'#c0392b',title:'北京·帝都',role:'你是北京接待官京京，皇城根儿范儿，熟悉故宫长城胡同，爱说"您猜怎么着"'},
+  xian: {name:'西西',av:'陕',img:'xian',color:'#b8860b',title:'西安·古都长安',role:'你是西安接待官西西，十三朝古都范儿，熟悉兵马俑城墙回民街，口头禅"这是有来头的"'},
+  luoyang: {name:'洛洛',av:'洛',img:'luoyang',color:'#e91e63',title:'洛阳·牡丹花城',role:'你是洛阳接待官洛洛，熟悉龙门石窟白马寺老君山，牡丹花事熟门熟路'},
+  shanghai: {name:'沪沪',av:'沪',img:'shanghai',color:'#16324f',title:'上海·魔都',role:'你是上海接待官沪沪，精致优雅，熟悉外滩迪士尼陆家嘴，口头禅"侬晓得伐"'},
+  hangzhou: {name:'杭杭',av:'杭',img:'hangzhou',color:'#2e8b57',title:'杭州·西湖韵味',role:'你是杭州接待官杭杭，熟悉西湖灵隐寺龙井宋城，温婉闲适'},
+  suzhou: {name:'园园',av:'苏',img:'suzhou',color:'#6a8e4f',title:'苏州·园林之城',role:'你是苏州接待官园园，熟悉拙政园平江路周庄，吴侬软语'},
+  nanjing: {name:'宁宁',av:'宁',img:'nanjing',color:'#8b0000',title:'南京·金陵',role:'你是南京接待官宁宁，熟悉中山陵夫子庙秦淮河，六朝古都底蕴'},
+  qingdao: {name:'岛岛',av:'岛',img:'qingdao',color:'#1e90ff',title:'青岛·海滨',role:'你是青岛接待官岛岛，熟悉栈桥八大关崂山啤酒，爽朗好客'},
+  guangzhou: {name:'穗穗',av:'穗',img:'guangzhou',color:'#ff6f00',title:'广州·羊城',role:'你是广州接待官穗穗，一盅两件早茶达人，熟悉广州塔沙面长隆，口头禅"饮茶先啦"'},
+  xiamen: {name:'鹭鹭',av:'鹭',img:'xiamen',color:'#00bcd4',title:'厦门·海上花园',role:'你是厦门接待官鹭鹭，熟悉鼓浪屿环岛路曾厝垵，小清新'},
+  sanya: {name:'森森',av:'椰',img:'sanya',color:'#00897b',title:'三亚·天涯海角',role:'你是三亚接待官森森，熟悉亚龙湾蜈支洲岛南山，热情似火'},
+  guilin: {name:'林林',av:'桂',img:'guilin',color:'#33691e',title:'桂林·山水甲天下',role:'你是桂林接待官林林，熟悉漓江阳朔象鼻山龙脊，能歌善画'},
+  changsha: {name:'沙沙',av:'长',img:'changsha',color:'#e53935',title:'长沙·星城',role:'你是长沙接待官沙沙，熟悉橘子洲岳麓山茶颜火宫殿，泼辣热情，口头禅"辣得过瘾"'},
+  wuhan: {name:'汉汉',av:'汉',img:'wuhan',color:'#3949ab',title:'武汉·江城',role:'你是武汉接待官汉汉，熟悉黄鹤楼东湖热干面武大樱花，豪爽'},
+  zhangjiajie: {name:'界界',av:'界',img:'zhangjiajie',color:'#4e342e',title:'张家界·奇峰',role:'你是张家界接待官界界，熟悉武陵源天门山凤凰古城，山里人耿直'},
+  kunming: {name:'明明',av:'滇',img:'kunming',color:'#f9a825',title:'昆明·春城',role:'你是昆明接待官明明，熟悉滇池石林翠湖过桥米线，四季如春'},
+  lijiang: {name:'江江',av:'丽',img:'lijiang',color:'#5e35b1',title:'丽江·古城',role:'你是丽江接待官江江，纳西族风情，熟悉丽江古城玉龙雪山束河，浪漫自由'},
+  harbin: {name:'滨滨',av:'哈',img:'harbin',color:'#4fc3f7',title:'哈尔滨·冰城',role:'你是哈尔滨接待官滨滨，熟悉中央大街索菲亚冰雪大世界，热情似火的东北人'},
+  dunhuang: {name:'敦敦',av:'敦',img:'dunhuang',color:'#bf360c',title:'敦煌·飞天',role:'你是敦煌接待官敦敦，熟悉莫高窟鸣沙山月牙泉玉门关，丝路驼铃声声'},
+  // ===== 全国城市（续） =====
+  shenyang: {name:'沈沈',av:'沈',img:'shenyang',color:'#b03a2e',title:'沈阳·盛京',role:'你是沈阳接待官沈沈，熟悉沈阳故宫张氏帅府，豪爽东北人'},
+  changchun: {name:'春春',av:'春',img:'changchun',color:'#27ae60',title:'长春·车城',role:'你是长春接待官春春，熟悉伪满皇宫净月潭长影'},
+  dalian: {name:'连连',av:'连',img:'dalian',color:'#2980b9',title:'大连·滨城',role:'你是大连接待官连连，熟悉星海广场老虎滩金石滩，海滨浪漫'},
+  tianjin: {name:'津津',av:'津',img:'tianjin',color:'#34495e',title:'天津·津门',role:'你是天津接待官津津，熟悉天津之眼五大道古文化街，说话带天津味儿，口头禅"嘛钱不钱的"'},
+  datong: {name:'同同',av:'同',img:'datong',color:'#7d6608',title:'大同·佛都',role:'你是大同接待官同同，熟悉云冈石窟悬空寺平遥古城，晋商文化熟门熟路'},
+  chengde: {name:'承承',av:'承',img:'chengde',color:'#1e8449',title:'承德·避暑山庄',role:'你是承德接待官承承，熟悉避暑山庄外八庙，清代夏宫历史'},
+  beidaihe: {name:'浪浪',av:'浪',img:'beidaihe',color:'#48c9b0',title:'北戴河·海滨',role:'你是北戴河接待官浪浪，熟悉鸽子窝阿那亚南戴河，文艺海滨'},
+  hulunbuir: {name:'原原',av:'原',img:'hulunbuir',color:'#9a7d0a',title:'呼伦贝尔·草原',role:'你是呼伦贝尔接待官原原，熟悉大草原满洲里额尔古纳，热情好客'},
+  jinan: {name:'泉泉',av:'泉',img:'jinan',color:'#16a085',title:'济南·泉城',role:'你是济南接待官泉泉，熟悉趵突泉大明湖千佛山鲁菜'},
+  huangshan: {name:'峰峰',av:'峰',img:'huangshan',color:'#4d5656',title:'黄山·天下奇山',role:'你是黄山接待官峰峰，熟悉黄山宏村西递徽州，云海奇松'},
+  ningbo: {name:'波波',av:'波',img:'ningbo',color:'#2471a3',title:'宁波·商港',role:'你是宁波接待官波波，熟悉天一阁溪口普陀山，温婉'},
+  nanchang: {name:'昌昌',av:'昌',img:'nanchang',color:'#c0392b',title:'南昌·英雄城',role:'你是南昌接待官昌昌，熟悉滕王阁八一广场庐山，红色文化'},
+  jingdezhen: {name:'瓷瓷',av:'瓷',img:'jingdezhen',color:'#7f8c8d',title:'景德镇·瓷都',role:'你是景德镇接待官瓷瓷，熟悉御窑陶溪川陶瓷博物馆，匠人气质'},
+  fuzhou: {name:'榕榕',av:'榕',img:'fuzhou',color:'#229954',title:'福州·榕城',role:'你是福州接待官榕榕，熟悉三坊七巷鼓山，鱼丸肉燕'},
+  zhengzhou: {name:'郑郑',av:'郑',img:'zhengzhou',color:'#6c3483',title:'郑州·商都',role:'你是郑州接待官郑郑，熟悉少林寺嵩山黄河风景区'},
+  kaifeng: {name:'汴汴',av:'汴',img:'kaifeng',color:'#b9770e',title:'开封·宋都',role:'你是开封接待官汴汴，熟悉清明上河园龙亭大相国寺，宋韵'},
+  shenzhen: {name:'鹏鹏',av:'鹏',img:'shenzhen',color:'#e67e22',title:'深圳·鹏城',role:'你是深圳接待官鹏鹏，年轻活力，熟悉世界之窗华侨城深圳湾'},
+  zhuhai: {name:'珠珠',av:'珠',img:'zhuhai',color:'#17a589',title:'珠海·百岛',role:'你是珠海接待官珠珠，熟悉长隆海洋王国情侣路港珠澳大桥'},
+  beihai: {name:'滩滩',av:'滩',img:'beihai',color:'#148f77',title:'北海·银滩',role:'你是北海接待官滩滩，熟悉涠洲岛银滩北海老街，海岛悠闲'},
+  haikou: {name:'椰椰',av:'椰',img:'haikou',color:'#d4ac0d',title:'海口·椰城',role:'你是海口接待官椰椰，熟悉骑楼老街假日海滩火山口'},
+  guiyang: {name:'筑筑',av:'筑',img:'guiyang',color:'#1e8449',title:'贵阳·林城',role:'你是贵阳接待官筑筑，熟悉黔灵山甲秀楼青岩古镇，酸辣'},
+  zunyi: {name:'义义',av:'义',img:'zunyi',color:'#922b21',title:'遵义·红城',role:'你是遵义接待官义义，熟悉遵义会议赤水娄山关'},
+  jiuzhaigou: {name:'沟沟',av:'沟',img:'jiuzhaigou',color:'#2e86c1',title:'九寨沟·瑶池',role:'你是九寨沟接待官沟沟，熟悉九寨沟黄龙松潘，提醒注意高反'},
+  daocheng: {name:'稻稻',av:'稻',img:'daocheng',color:'#7d3c98',title:'稻城亚丁',role:'你是稻城接待官稻稻，熟悉亚丁新都桥理塘，提醒高原反应'},
+  lhasa: {name:'萨萨',av:'萨',img:'lhasa',color:'#c99700',title:'拉萨·日光城',role:'你是拉萨接待官萨萨，熟悉布达拉宫大昭寺纳木错，温柔提醒高原反应'},
+  urumqi: {name:'乌乌',av:'乌',img:'urumqi',color:'#ca6f1e',title:'乌鲁木齐·天山',role:'你是乌鲁木齐接待官乌乌，熟悉天山天池大巴扎喀纳斯，西域风情'},
+  turpan: {name:'番番',av:'番',img:'turpan',color:'#e74c3c',title:'吐鲁番·火洲',role:'你是吐鲁番接待官番番，熟悉火焰山葡萄沟坎儿井'},
+  lanzhou: {name:'兰兰',av:'兰',img:'lanzhou',color:'#21618c',title:'兰州·金城',role:'你是兰州接待官兰兰，熟悉牛肉面中山桥正宁路夜市'},
+  xining: {name:'清清',av:'清',img:'xining',color:'#48c9b0',title:'西宁·夏都',role:'你是西宁接待官清清，熟悉青海湖塔尔寺茶卡盐湖'},
+  hongkong: {name:'港港',av:'港',img:'hongkong',color:'#2c3e50',title:'香港·东方之珠',role:'你是香港接待官港港，熟悉维多利亚港太平山顶尖沙咀，双语切换自如'},
+  taiyuan: {name:'晋晋',av:'晋',img:'taiyuan',color:'#9a7d0a',title:'太原·晋祠',role:'你是太原接待官晋晋，熟悉晋祠山西博物院刀削面，晋韵十足'},
+  hohhot: {name:'和和',av:'和',img:'hohhot',color:'#27ae60',title:'呼和浩特·青城',role:'你是呼和浩特接待官和和，熟悉大召寺希拉穆仁草原，热情豪爽'},
+  shijiazhuang: {name:'石石',av:'石',img:'shijiazhuang',color:'#7f8c8d',title:'石家庄·常山',role:'你是石家庄接待官石石，熟悉赵州桥正定古城西柏坡，实在'},
+  wuxi: {name:'锡锡',av:'锡',img:'wuxi',color:'#2980b9',title:'无锡·太湖',role:'你是无锡接待官锡锡，熟悉鼋头渚灵山大佛拈花湾，温婉'},
+  yangzhou: {name:'扬扬',av:'扬',img:'yangzhou',color:'#16a085',title:'扬州·淮扬',role:'你是扬州接待官扬扬，熟悉瘦西湖个园淮扬早茶，慢条斯理'},
+  shaoxing: {name:'兴兴',av:'兴',img:'shaoxing',color:'#7d6608',title:'绍兴·水乡',role:'你是绍兴接待官兴兴，熟悉鲁迅故里沈园兰亭，书卷气'},
+  wenzhou: {name:'瓯瓯',av:'瓯',img:'wenzhou',color:'#d35400',title:'温州·雁荡',role:'你是温州接待官瓯瓯，熟悉雁荡山南溪江江心屿，敢闯敢拼'},
+  hefei: {name:'肥肥',av:'肥',img:'hefei',color:'#1e8449',title:'合肥·包公',role:'你是合肥接待官肥肥，熟悉包公园三河古镇巢湖，公正'},
+  macau: {name:'澳澳',av:'澳',img:'macau',color:'#8e44ad',title:'澳门·赌城',role:'你是澳门接待官澳澳，熟悉大三巴议事亭氹仔路环，中西合璧'},
+  nanning: {name:'南南',av:'南',img:'nanning',color:'#e67e22',title:'南宁·绿城',role:'你是南宁接待官南南，熟悉青秀山老友粉德天瀑布，热情'},
+  xishuangbanna: {name:'版版',av:'版',img:'xishuangbanna',color:'#c99700',title:'西双版纳·雨林',role:'你是西双版纳接待官版版，熟悉野象谷星光夜市告庄傣楼，孔雀灵'},
+  yinchuan: {name:'银银',av:'银',img:'yinchuan',color:'#b9770e',title:'银川·塞上',role:'你是银川接待官银银，熟悉西夏王陵沙坡头贺兰山，粗犷'},
+  kashgar: {name:'喀喀',av:'喀',img:'kashgar',color:'#ca6f1e',title:'喀什·西域',role:'你是喀什接待官喀喀，熟悉喀什古城帕米尔慕士塔格，异域风情'},
+  wuyishan: {name:'夷夷',av:'夷',img:'wuyishan',color:'#1e8449',title:'武夷山·岩茶',role:'你是武夷山接待官夷夷，熟悉九曲溪天游峰大红袍，茶禅一味'},
+};
+
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function formatMarkdown(text){
+  let h = esc(text);
+  h = h.replace(/### (.*?)(\n|$)/g,'<h4>$1</h4>');
+  h = h.replace(/## (.*?)(\n|$)/g,'<h3>$1</h3>');
+  h = h.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  h = h.replace(/\*(.*?)\*/g,'<em>$1</em>');
+  h = h.replace(/^- (.*?)$/gm,'<li>$1</li>');
+  h = h.replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>');
+  h = h.replace(/^> (.*?)$/gm,'<blockquote>$1</blockquote>');
+  h = h.replace(/\n/g,'<br>');
+  h = h.replace(/<\/h3><br>/g,'</h3>');
+  h = h.replace(/<\/h4><br>/g,'</h4>');
+  h = h.replace(/<\/ul><br>/g,'</ul>');
+  h = h.replace(/<\/blockquote><br>/g,'</blockquote>');
+  return h;
+}
+
+// ---------- 渲染 ----------
+function renderUserMsg(text){
+  const msgs = document.getElementById('messages');
+  const uDiv = document.createElement('div');
+  uDiv.className = 'msg user';
+  uDiv.innerHTML = `<div class="av">🧑</div><div class="bubble">${esc(text)}</div>`;
+
+  // 悬浮撤回按钮（大字版）
+  const undoBtn = document.createElement('button');
+  undoBtn.textContent = '↩️ 撤回';
+  undoBtn.style.cssText = 'position:absolute;right:0;top:-30px;background:#e74c3c;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:14px;cursor:pointer;opacity:0;transition:opacity .2s;box-shadow:0 2px 6px rgba(0,0,0,.2);z-index:10;';
+  uDiv.style.position = 'relative';
+  uDiv.appendChild(undoBtn);
+  uDiv.addEventListener('mouseenter', () => undoBtn.style.opacity = '1');
+  uDiv.addEventListener('mouseleave', () => undoBtn.style.opacity = '0');
+  undoBtn.onclick = (e) => { e.stopPropagation(); doUndo(uDiv); };
+
+  // 右键菜单
+  uDiv.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    showUndoMenu(e.clientX, e.clientY, uDiv);
+  });
+
+  // 手机长按
+  let pressTimer = null;
+  uDiv.addEventListener('touchstart', (e) => {
+    pressTimer = setTimeout(() => {
+      const t = e.touches[0];
+      showUndoMenu(t.clientX, t.clientY, uDiv);
+    }, 600);
+  });
+  uDiv.addEventListener('touchend', () => clearTimeout(pressTimer));
+  uDiv.addEventListener('touchmove', () => clearTimeout(pressTimer));
+
+  msgs.appendChild(uDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showUndoMenu(x, y, uDiv){
+  // 移除旧菜单
+  const old = document.getElementById('_undoMenu');
+  if(old) old.remove();
+  const menu = document.createElement('div');
+  menu.id = '_undoMenu';
+  menu.style.cssText = `position:fixed;left:${x}px;top:${y}px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;
+    box-shadow:0 4px 16px rgba(0,0,0,.15);padding:8px;z-index:9999;min-width:160px;`;
+  menu.innerHTML = `<button style="width:100%;padding:10px;border:none;background:#e74c3c;color:#fff;border-radius:6px;font-size:15px;cursor:pointer;">↩️ 撤回这条消息</button>`;
+  menu.querySelector('button').onclick = (e) => {
+    e.stopPropagation();
+    menu.remove();
+    doUndo(uDiv);
+  };
+  document.body.appendChild(menu);
+  // 点别处关闭
+  const close = () => { menu.remove(); document.removeEventListener('click', close); };
+  setTimeout(() => document.addEventListener('click', close), 0);
+}
+
+async function doUndo(uDiv){
+  if(!confirm('撤回这条消息？AI 的回复也会一并删除。')) return;
+  try {
+    await fetch('/api/undo', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({session_id: getSessionId()})});
+  } catch(e){}
+  let next = uDiv.nextSibling;
+  uDiv.remove();
+  while(next && next.classList && next.classList.contains('assistant')){
+    const n = next.nextSibling;
+    next.remove();
+    next = n;
+  }
+  renderSysMsg('↩️ 已撤回上一条消息');
+}
+
+function renderAssistantMsg(text, ipKey){
+  const msgs = document.getElementById('messages');
+  const d = IP_DATA[ipKey || currentIP] || IP_DATA.sichuan;
+  const aDiv = document.createElement('div');
+  aDiv.className = 'msg assistant';
+  aDiv.innerHTML = `<div class="av" style="background-image:url('images/${d.img}.jpg');background-size:cover;background-position:center;border:2px solid #fff">${d.av}</div><div class="bubble">${formatMarkdown(text)}</div>`;
+  msgs.appendChild(aDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  return aDiv;
+}
+
+// AI 回答完后，在气泡底部追加「看看真实照片/别人怎么玩」参考卡片
+async function appendVisualsCard(aDiv, keyword){
+  try {
+    const params = new URLSearchParams({ip: currentIP || 'chengdu'});
+    if(keyword) params.set('keyword', keyword);
+    const r = await fetch('/api/visuals?' + params.toString());
+    const d = await r.json();
+    const bubble = aDiv.querySelector('.bubble');
+    if(!bubble) return;
+    const card = document.createElement('div');
+    card.style.cssText = 'margin-top:12px;padding:10px;background:#f8f9fa;border-radius:8px;border-top:1px dashed #ddd;font-size:13px;';
+    let html = '<div style="color:#888;margin-bottom:6px;">📱 看看真实照片和别人怎么玩：</div><div style="display:flex;flex-wrap:wrap;gap:6px;">';
+    for(const lk of d.links){
+      html += `<a href="${lk.url}" target="_blank" style="display:inline-block;padding:5px 10px;background:#fff;border:1px solid #e0e0e0;border-radius:14px;text-decoration:none;color:#333;font-size:12px;">${lk.icon} ${lk.name}</a>`;
+    }
+    html += '</div>';
+    card.innerHTML = html;
+    bubble.appendChild(card);
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+  } catch(e){}
+}
+
+// 仅当问题/回答涉及路线导航时，在气泡底部插入高德导航按钮
+async function maybeAppendNavCard(aDiv, userText, answerText){
+  const KW = /(路线|导航|怎么走|怎么去|自驾|开车|驾车|公交|地铁|怎么坐|交通|怎么到|怎么过去|怎么来|怎么回|距离|多远|骑行|打车|坐车|班车|高铁|火车|飞机)/;
+  if(!KW.test(userText||'') && !KW.test(answerText||'')) return;
+
+  // 1) 先尝试识别"从 X 到 Y"跨城路线
+  const m = (userText||'').match(/从([\u4e00-\u9fa5]{2,6})(?:出发)?(?:到|去|开车到|自驾到|坐车到|坐飞机到)([\u4e00-\u9fa5]{2,8})/);
+  if(m){
+    try{
+      const r = await fetch('/api/route-nav?from_city=' + encodeURIComponent(m[1]) + '&to_city=' + encodeURIComponent(m[2]));
+      const d = await r.json();
+      if(d.url){
+        const bubble = aDiv.querySelector('.bubble');
+        if(!bubble) return;
+        const btn = document.createElement('a');
+        btn.href = d.url; btn.target = '_blank';
+        btn.style.cssText = 'display:block;margin-top:12px;padding:10px 14px;background:#27ae60;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:bold;text-align:center;box-shadow:0 2px 6px rgba(39,174,96,.3);';
+        btn.innerHTML = `🧭 打开高德地图：${m[1]} → ${m[2]}（一键导航）`;
+        bubble.appendChild(btn);
+        return;
+      }
+    }catch(e){}
+  }
+
+  // 2) 单城导航
+  if(!currentIP || currentIP==='master' || !IP_DATA[currentIP]) return;
+  try{
+    const r = await fetch('/api/nav-url?ip=' + currentIP);
+    const d = await r.json();
+    if(!d.url) return;
+    const cityName = IP_CITY_NAME[currentIP] || IP_DATA[currentIP].name || '目的地';
+    const bubble = aDiv.querySelector('.bubble');
+    if(!bubble) return;
+    const btn = document.createElement('a');
+    btn.href = d.url;
+    btn.target = '_blank';
+    btn.style.cssText = 'display:block;margin-top:12px;padding:10px 14px;background:#27ae60;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:bold;text-align:center;box-shadow:0 2px 6px rgba(39,174,96,.3);';
+    btn.innerHTML = `🧭 打开高德地图，一键导航到${cityName}`;
+    bubble.appendChild(btn);
+  }catch(e){}
+}
+
+// 多城协作：为相邻两站之间生成高德导航按钮
+async function appendMultiCityNavCards(aDiv, cities){
+  const bubble = aDiv.querySelector('.bubble');
+  if(!bubble) return;
+  for(let i = 0; i < cities.length - 1; i++){
+    const from = cities[i], to = cities[i+1];
+    try{
+      const r = await fetch('/api/route-nav?from_city=' + encodeURIComponent(from) + '&to_city=' + encodeURIComponent(to));
+      const d = await r.json();
+      if(!d.url) continue;
+      const btn = document.createElement('a');
+      btn.href = d.url; btn.target = '_blank';
+      btn.style.cssText = 'display:block;margin-top:8px;padding:9px 14px;background:#27ae60;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:bold;text-align:center;box-shadow:0 2px 6px rgba(39,174,96,.3);';
+      btn.innerHTML = `🧭 高德导航：${from} → ${to}`;
+      bubble.appendChild(btn);
+    }catch(e){}
+  }
+}
+
+function renderSysMsg(text){
+  const msgs = document.getElementById('messages');
+  const sys = document.createElement('div');
+  sys.className = 'sys-msg';
+  sys.textContent = text;
+  msgs.appendChild(sys);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ---------- 加载历史 ----------
+async function loadHistory(){
+  const sid = getSessionId();
+  try {
+    const resp = await fetch(API_BASE + '/api/history?session_id=' + encodeURIComponent(sid));
+    const data = await resp.json();
+    if (data.current_ip && IP_DATA[data.current_ip]) {
+      applyIP(data.current_ip, false);
+    }
+    const msgs = document.getElementById('messages');
+    const welcome = msgs.querySelector('.welcome');
+    if (welcome) welcome.remove();
+    if (!data.messages || data.messages.length === 0) {
+      // 没有历史，显示欢迎
+      msgs.innerHTML = `
+        <div class="welcome">
+          <h2>🏙️ 你好，我是小知</h2>
+          <p>我是城知总控官，你的专属文旅调度助手。<br>
+          平时由我为你规划行程、解答问题；<br>
+          一旦你提到具体城市或特色美食，我会自动转接给当地接待官。<br>
+          <span style="font-size:11px;color:#aaa">试试问"成都3天2晚带老人"或"杭州有什么好吃的"，我会帮你转接～</span></p>
+        </div>`;
+      return;
+    }
+    for (const m of data.messages) {
+      if (m.role === 'user') renderUserMsg(m.content);
+      else if (m.role === 'assistant') renderAssistantMsg(m.content, m.ip);
+    }
+  } catch (e) {
+    console.warn('历史加载失败：', e);
+  }
+}
+
+// ---------- 导航：一键跳高德地图 ----------
+async function openNav(){
+  const input = document.getElementById('input').value.trim();
+  const ip = currentIP || 'chengdu';
+  const params = new URLSearchParams({ip: ip});
+  if(input) params.set('keyword', input);
+  try {
+    const r = await fetch('/api/nav-url?' + params.toString());
+    const d = await r.json();
+    window.open(d.url, '_blank');
+  } catch(e){
+    alert('导航打开失败');
+  }
+}
+// 城市切换后显示导航条
+function showNavBar(){
+  // 常驻导航按钮已废弃，改为在 AI 回答涉及路线时动态插入
+  document.getElementById('navBar').style.display = 'none';
+}
+
+// ---------- 语音输入（Web Speech API，Edge/Chrome 原生支持） ----------
+let recog = null, recognizing = false;
+function toggleMic(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ alert('当前浏览器不支持语音识别，请用 Chrome/Edge 打开'); return; }
+  if(recognizing){ recog.stop(); return; }
+  recog = new SR();
+  recog.lang = 'zh-CN';
+  recog.continuous = true;   // 不让浏览器自己停，完全由静音检测控制
+  recog.interimResults = true;
+  recog.maxAlternatives = 1;
+
+  // 静音检测：从"最后一次听到声音"开始算，连续 3.5 秒没声音才停
+  let audioCtx=null, analyser=null, micStream=null, silenceTimer=null, silenceStart=Date.now();
+  async function startSilenceDetect(){
+    try{
+      micStream = await navigator.mediaDevices.getUserMedia({audio:true});
+      audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const src = audioCtx.createMediaStreamSource(micStream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      src.connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      silenceStart = Date.now();
+      silenceTimer = setInterval(()=>{
+        if(!analyser) return;
+        analyser.getByteFrequencyData(data);
+        let sum=0; for(let i=0;i<data.length;i++) sum+=data[i];
+        const avg = sum/data.length;
+        if(avg >= 12){
+          // 听到声音，重置静音计时
+          silenceStart = Date.now();
+        } else {
+          // 没声音，累计时长
+          if(Date.now() - silenceStart > 3500){
+            try{ recog.stop(); }catch(e){}
+          }
+        }
+      }, 200);
+    }catch(e){}
+  }
+  function stopSilenceDetect(){
+    if(silenceTimer){ clearInterval(silenceTimer); silenceTimer=null; }
+    if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; }
+    if(audioCtx){ try{audioCtx.close();}catch(e){} audioCtx=null; }
+  }
+  const micBtn = document.getElementById('micBtn');
+  const input = document.getElementById('input');
+  const base = input.value;
+  micBtn.style.background = '#e74c3c';
+  micBtn.style.borderColor = '#c0392b';
+  micBtn.querySelector('svg').setAttribute('stroke', '#fff');
+  recog.onresult = (e) => {
+    let finalText = '';
+    for(let i=0;i<e.results.length;i++){
+      if(e.results[i].isFinal) finalText += e.results[i][0].transcript;
+    }
+    input.value = base + finalText;
+    // 实时显示中间结果
+    let interim = '';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(!e.results[i].isFinal) interim += e.results[i][0].transcript;
+    }
+    if(interim) input.value = base + finalText + interim;
+  };
+  recog.onerror = (e) => {
+    alert('语音识别出错：'+e.error+'（如果是麦克风权限，请在浏览器地址栏左侧允许麦克风）');
+    micBtn.style.background = ''; micBtn.style.color=''; micBtn.querySelector('svg').setAttribute('stroke','#555');
+    recognizing = false;
+  };
+  recog.onend = async () => {
+    micBtn.style.background = ''; micBtn.style.color=''; micBtn.querySelector('svg').setAttribute('stroke','#555');
+    recognizing = false;
+    stopSilenceDetect();
+    let t = input.value.trim();
+    if(!t) return;
+    // 方言词规范化：啷个→怎么、啥子→什么 等
+    try {
+      const r = await fetch('/api/dialect-normalize', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: t})});
+      const d = await r.json();
+      if(d.text) t = d.text;
+    } catch(e){}
+    input.value = t;
+    send();
+  };
+  recog.start();
+  recognizing = true;
+  startSilenceDetect();
+}
+
+// ---------- 发送 ----------
+async function send(){
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  document.getElementById('sendBtn').disabled = true;
+
+  const msgs = document.getElementById('messages');
+  const welcome = msgs.querySelector('.welcome'); if (welcome) welcome.remove();
+
+  renderUserMsg(text);
+
+  // AI 消息气泡（空，准备流式填充）
+  const aDiv = document.createElement('div');
+  aDiv.className = 'msg assistant';
+  const startIP = currentIP;
+  aDiv.innerHTML = `<div class="av" style="background-image:url('images/${IP_DATA[startIP].img}.jpg');background-size:cover;background-position:center;border:2px solid #fff">${IP_DATA[startIP].av}</div><div class="bubble" id="streamBubble"><span class="typing"><span></span><span></span><span></span></span></div>`;
+  msgs.appendChild(aDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  const bubble = aDiv.querySelector('.bubble');
+
+  let full = '';
+  let collabCityList = [];  // 多城协作时涉及的城市名（按站序）
+  // 丝滑渲染：用 rAF 节流，每帧最多一次全量重渲染，避免每个 token 都 reflow
+  let rafId = 0;
+  let bubbleEmpty = true;
+  function scheduleRender(){
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      bubble.innerHTML = formatMarkdown(full);
+      msgs.scrollTop = msgs.scrollHeight;
+    });
+  }
+  try {
+    const resp = await fetch(STREAM_API, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        user_input: text,
+        session_id: getSessionId(),
+        current_ip: currentIP,
+      })
+    });
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, {stream: true});
+      const parts = buffer.split('\n\n');
+      buffer = parts.pop();
+      for (const block of parts) {
+        if (!block.startsWith('data: ')) continue;
+        try {
+          const evt = JSON.parse(block.slice(6));
+          if (evt.type === 'transfer') {
+            // AI 自动转接：静默切 IP（正文里会带"已为你转接至XX"）
+            console.log('[transfer event]', evt);
+            applyIP(evt.to, false);
+            // 把气泡头像也切到新 IP
+            const av = aDiv.querySelector('.av');
+            const d = IP_DATA[evt.to];
+            if (d) { av.style.background = d.color; av.textContent = d.av; }
+            // 顶部闪现提示
+            showToast('🔄 ' + (evt.text || '已转接') + ' → ' + (evt.name || evt.to));
+          } else if (evt.type === 'collab_start') {
+            // 多 Agent 协作启动：并行派出多位城市接待官
+            console.log('[collab_start]', evt);
+            collabCityList = (evt.agents || []).map(a => a.city);
+            full += `\n> ${evt.text || '🔀 多 Agent 协作启动...'}\n>\n`;
+          } else if (evt.type === 'collab_agent_done') {
+            // 某位城市接待官收集完毕
+            console.log('[collab_agent_done]', evt.name);
+            const roleLabel = evt.idx ? `第${evt.idx}站` : '';
+            full += `> ✅ ${evt.name}（${evt.city}${roleLabel ? '·' + roleLabel : ''}）信息已收集\n`;
+          } else if (evt.type === 'tool_start') {
+            full += `\n> 🔧 正在查询：${evt.tool}...\n\n`;
+          } else if (evt.type === 'token') {
+            full += evt.text;
+          } else if (evt.type === 'sys') {
+            // 系统提示（如"已开启新对话"）
+            renderSysMsg(evt.text);
+          } else if (evt.type === 'error') {
+            full += '\n⚠️ ' + evt.message;
+          }
+          scheduleRender();
+        } catch(e) {}
+      }
+    }
+    if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+    if (!full) full = '没有收到回复';
+    bubble.innerHTML = formatMarkdown(full);
+    attachFeedback(aDiv, text, full);
+    // 在回答完后自动附上小红书/抖音/实景图参考卡片
+    // 用户明确说不要网红/小众/本地人推荐时，不自动推小红书/抖音卡片
+    const antiInfluencer = /(不要网红|不想看网红|别推网红|小众|本地人|人少|清静|安静|不打卡)/;
+    if (!antiInfluencer.test(text || '')) {
+      appendVisualsCard(aDiv, text);
+    }
+    // 只有回答/提问涉及路线/导航时，才在气泡底部插入高德导航按钮
+    maybeAppendNavCard(aDiv, text, full);
+    // 多城协作：为相邻两站之间生成高德导航按钮
+    if (collabCityList.length >= 2) {
+      appendMultiCityNavCards(aDiv, collabCityList);
+    }
+  } catch (e) {
+    bubble.innerHTML = '⚠️ 连接失败：' + e.message;
+  }
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
+}
+
+// ---------- 👍/👎 反馈 ----------
+function attachFeedback(aDiv, userText, answerText){
+  const bar = document.createElement('div');
+  bar.style.cssText = 'margin-top:6px;font-size:12px;color:#999;display:flex;gap:10px;';
+  bar.innerHTML = `<span style="cursor:pointer;opacity:.7" data-v="1">👍 有用</span><span style="cursor:pointer;opacity:.7" data-v="-1">👎 没用</span>`;
+  bar.querySelectorAll('span').forEach(el => {
+    el.onclick = async () => {
+      const v = parseInt(el.dataset.v, 10);
+      bar.querySelectorAll('span').forEach(s => s.style.opacity = '.3');
+      el.style.opacity = '1';
+      try {
+        await fetch(API_BASE + '/api/feedback', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({session_id: getSessionId(), user_input: userText, assistant_text: answerText, rating: v})
+        });
+        el.textContent = v > 0 ? '👍 已感谢' : '👎 已记录';
+      } catch(e) { el.textContent = '反馈失败'; }
+    };
+  });
+  aDiv.querySelector('.bubble').appendChild(bar);
+}
+
+// ---------- IP 切换 ----------
+function applyIP(ip, showSysMsg){
+  if (!IP_DATA[ip]) return;
+  currentIP = ip;
+  const d = IP_DATA[ip];
+  document.querySelectorAll('.ip-item').forEach(el => el.classList.toggle('active', el.dataset.ip === ip));
+  document.getElementById('curAv').style.backgroundImage = "url('images/" + d.img + ".jpg')";
+  document.getElementById('curAv').style.backgroundSize = 'cover';
+  document.getElementById('curAv').style.backgroundPosition = 'center';
+  document.getElementById('curAv').textContent = '';
+  document.getElementById('curName').textContent = d.name;
+  document.getElementById('curDesc').textContent = d.title;
+  // 同步省级 chip 高亮
+  document.querySelectorAll('.province-chip').forEach((el,i)=>{
+    el.classList.toggle('active', (i===0 && ['sichuan','chengdu','leshan','yibin','mianyang','nanchong','zigong','meishan'].includes(ip))
+                              || (i===1 && ['chongqing','chongqing_county'].includes(ip)));
+  });
+  if (showSysMsg) {
+    renderSysMsg(`—— 已转接至 ${d.name}（${d.title}）——`);
+  }
+  showNavBar();
+}
+
+function selectIP(ip){
+  applyIP(ip, true);
+}
+
+function switchProvince(p){
+  selectIP(p === '四川' ? 'sichuan' : 'chongqing');
+}
+
+async function resetChat(){
+  try {
+    const sid = newSessionId();
+    fetch(API_BASE + '/api/reset', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({session_id: sid})
+    }).catch(()=>{});
+    // 先清空聊天区（最重要），再切 IP
+    const msgs = document.getElementById('messages');
+    if (msgs) {
+      msgs.innerHTML = `
+        <div class="welcome">
+          <h2>🏙️ 你好，我是小知</h2>
+          <p>我是城知总控官，你的专属文旅调度助手。<br>
+          告诉我你在哪个城市、想玩几天，我来帮你安排。<br>
+          <span style="font-size:11px;color:#aaa">例如："重庆3天2晚带老人"或"成都到西安怎么走"</span></p>
+        </div>`;
+    }
+    try { applyIP('master', false); } catch(e2) { console.warn('applyIP warn:', e2); }
+    showToast('✅ 已开启新对话');
+  } catch(e) {
+    console.error('resetChat failed:', e);
+    showToast('⚠️ 清空失败，请刷新页面');
+  }
+}
+
+// 启动：每次打开都是全新对话，不加载历史
+document.getElementById('input').focus();
+
+// ========== 非遗互动馆 ==========
+const HERITAGE = [
+  {
+    id:'bianlian', emoji:'🎭', name:'川剧变脸', city:'成都', tag:'一秒换脸的绝活',
+    desc:'川剧绝活，20世纪初成型于传统戏《归正楼》。清末名家康子林首创扯线变脸，一场最多连变九张脸，人称"九变化身"。演员借甩头、抖袖之势，瞬间揭去多层脸谱，相随心变，被誉为"东方魔术"。',
+    facts:['四大手法：抹脸、吹脸、扯脸、运气变脸，其中扯脸最常见','脸谱事先画在绸面上，用丝线连到腰间，借舞蹈动作掩护瞬间扯下','脸谱颜色有讲究：红表忠勇、白表奸诈、黑表刚直','2006年列入首批国家级非物质文化遗产名录'],
+    type:'mask'
+  },
+  {
+    id:'shuxiu', emoji:'🪡', name:'蜀绣', city:'成都', tag:'针尖上的山水',
+    desc:'中国四大名绣之一，距今三千余年，东晋时与蜀锦并称"蜀中瑰宝"。以针代笔、以线代墨，讲究施针，共有12大类122种针法交错使用。最高境界是"双面三异绣"——两面异形、异色、异针法，却找不到针脚。',
+    facts:['12大类122种针法，晕针、铺针、滚针交错使用','双面三异绣：正面九童子、背面两熊猫，针脚藏于无形','经典题材：《芙蓉鲤鱼》《九子·熊猫》《蜀宫乐伎》','2006年入选首批国家级非遗，与蜀锦同为成都两张名片'],
+    type:'stitch'
+  },
+  {
+    id:'haozi', emoji:'🚢', name:'川江号子', city:'重庆', tag:'川江船工的呐喊',
+    desc:'被誉为"长江文化活化石"，距今三千多年。川江航道曲折、水急滩多，船工纤夫为统一拉纤节奏，由号工领唱、众人帮腔，一领众和，与险滩恶水搏斗。曲调高亢激越，是船工用热血凝成的生命之歌。',
+    facts:['一领众和：号工领唱，众船工帮腔合唱，节奏与拉纤严格同步','流传于金沙江、长江及岷江、沱江、嘉陵江、乌江流域','1987年曾赴维也纳演出，轰动欧洲','木船时代结束后濒临消失，2006年列入首批国家级非遗抢救'],
+    type:'wave'
+  },
+  {
+    id:'longwu', emoji:'🐉', name:'铜梁龙舞', city:'重庆铜梁', tag:'会跳舞的东方巨龙',
+    desc:'兴起于明、鼎盛于清，被誉为"中华第一龙"。铜梁大龙长约50米，需三十人同舞；最惊险的是"烧火龙"——1600℃铁水被木拍击成漫天花雨，赤膊汉子在火星四溅中"人在龙中舞，龙在火中飞"。',
+    facts:['龙灯舞有大蠕龙、火龙、板凳龙等十大品种','烧火龙：1600℃铁水拍打成花雨，火星如雨却不伤人','龙灯彩扎要经构图、造型、裱糊、彩绘等上百道工序','2006年首批国家级非遗，曾登北京奥运开幕式、央视春晚'],
+    type:'lantern'
+  },
+  {
+    id:'zhubian', emoji:'🎋', name:'青神竹编', city:'眉山青神', tag:'薄如蝉翼的竹丝',
+    desc:'流传于眉山青神县，已有三千多年。青神先民用竹篾编"箕"养蚕，后发展成以竹作画的绝技。一根慈竹可劈成两万根竹丝，最细仅0.02毫米，薄如蝉翼，能织出山水人物、名人字画，作品曾作国礼赠送外国元首。',
+    facts:['一根慈竹可劈两万根竹丝，最细0.02毫米，比头发还细','平面竹编每厘米可排22根竹丝，《清明上河图》曾作国礼','已开发平面、立体、瓷胎竹编等25类3000多种产品','2008年列入国家级非遗，青神获"国际竹编之都"称号'],
+    type:'stitch'
+  },
+  {
+    id:'zharan', emoji:'🎨', name:'自贡扎染', city:'自贡', tag:'蓝白之间的晕染',
+    desc:'古称"蜀缬"，起源于秦汉、唐代鼎盛，曾是宫廷贡品。工匠以针代笔，用绞、缝、扎、捆、撮、叠、缚、夹等数十种手法扎结布料，浸染后拆线，未上色处形成自然冰纹——每一件都独一无二，宛如瓷器窑变。',
+    facts:['数十种扎缬手法：绞、缝、扎、捆、撮、叠、缚、夹','被扎处防染，拆线后呈自然冰裂纹，无一雷同','染料以板蓝草为主，从单色发展到复色多次浸染','与龚扇、剪纸并称自贡"小三绝"，2008年列入国家级非遗'],
+    type:'dye'
+  },
+  {
+    id:'zheshan', emoji:'🪭', name:'荣昌折扇', city:'重庆荣昌', tag:'一握江山半屏风',
+    desc:'始于宋、兴于明、盛于清，与苏州扇、杭州扇并称"中国三大名扇"。明嘉靖年间曾作为贡品入朝。一把折扇要经16个工段、145道工序，集染色、粘合、绘画、雕刻、镶嵌于一体，开合如行云流水。',
+    facts:['16个工段、145道工序，集染色、绘画、雕刻、镶嵌于一体','清代光绪年间县城扇铺两百多家，年产折扇400万把','郭沫若、张大千等名家曾为荣昌折扇题字作画','2008年列入国家级非遗，黑纸扇、棕竹扇最具代表性'],
+    type:'fan'
+  },
+  {
+    id:'shujin', emoji:'🧵', name:'蜀锦', city:'成都', tag:'寸锦寸金的织机',
+    desc:'中国四大名锦之首，被誉为"天下母锦"，近三千年历史。汉代专设"锦官"管理，成都由此得名"锦官城"，濯锦之江称"锦江"。蜀锦以桑蚕丝为料，用花楼木织机重经多纬起花，需两人配合提花，寸锦寸金。',
+    facts:['四大名锦（蜀锦、宋锦、云锦、壮锦）之首，称"天下母锦"','汉代设"锦官"，成都得名"锦官城"，岷江因濯锦称"锦江"','花楼木织机要两人配合，从设计到织造70多道工序','2006年首批国家级非遗，2009年入选联合国人类非遗代表作'],
+    type:'stitch'
+  },
+  {
+    id:'qiangnian', emoji:'🔥', name:'羌年', city:'绵阳北川', tag:'云朵上的节日',
+    desc:'羌语称"日美吉"，每年农历十月初一举行，为期三至五天，是羌族庆丰收、送祝福、祈平安最隆重的节日。由释比主持，全寨身着盛装转山祭神，围圈跳"沙朗"、共饮咂酒，男女老少纵情狂欢到深夜。',
+    facts:['农历十月初一，持续3-5天，有的寨子过到十月初十','由释比（羌族祭司）主持，祭天地、山神、祖先','男女老少围圈跳"沙朗"舞，用细管共饮咂酒','国家级非遗，2024年入选联合国人类非物质文化遗产代表作名录'],
+    type:'fire'
+  },
+  {
+    id:'jingju', emoji:'🎭', name:'京剧', city:'北京', tag:'国粹之声',
+    desc:'中国国粹，2010年入选联合国人类非物质文化遗产代表作。形成于北京，以西皮、二黄为主要声腔，融合唱念做打。脸谱、髯口、水袖、武打程式自成体系，是中国戏曲的集大成者。',
+    facts:['生旦净丑四大行当，脸谱颜色象征忠奸善恶','2010年入选联合国人类非遗代表作','四大名旦：梅兰芳、程砚秋、尚小云、荀慧生','梅派艺术创始人梅兰芳曾访美访苏，把京剧推向世界'],
+    type:'mask'
+  },
+  {
+    id:'jingtailan', emoji:'🏺', name:'景泰蓝', city:'北京', tag:'火与铜的淬炼',
+    desc:'学名"铜胎掐丝珐琅"，元末明初宫廷绝技。在铜胎上掐出细铜丝、粘成花纹，再填珐琅釉料，经多次点蓝、烧蓝、镀金而成。配色富丽庄重，是明清皇家御用重器。',
+    facts:['工序：制胎、掐丝、点蓝、烧蓝、磨光、镀金','釉料以天然矿物研磨，色彩沉稳不退','2006年列入首批国家级非遗','与玉器、雕漆并称"燕京八绝"代表'],
+    type:'dye'
+  },
+  {
+    id:'suxiu', emoji:'🪡', name:'苏绣', city:'苏州', tag:'针尖上的江南',
+    desc:'中国四大名绣之一，发源于苏州，两千余年历史。以针代笔、线分粗细，讲究"平、光、齐、匀、和、顺、细、密"。双面绣正反如一，猫、金鱼题材尤见功力。',
+    facts:['四大名绣（苏绣、湘绣、蜀绣、粤绣）之一','双面绣《小猫》是苏绣经典，针脚细到蚕丝','2006年列入首批国家级非遗','一根蚕丝可劈成数十份，细如蛛丝'],
+    type:'stitch'
+  },
+  {
+    id:'kunqu', emoji:'🎼', name:'昆曲', city:'苏州', tag:'百戏之祖',
+    desc:'原名"昆腔"，发源于昆山，六百余年。唱腔婉转清丽，讲究"一字三转"，是京剧、越剧等众多戏曲的源头之一。《牡丹亭》《长生殿》为传世经典。',
+    facts:['2001年被联合国列为首批"人类口述和非物质遗产代表作"','魏良辅改良水磨腔，节奏舒缓、一唱三叹','代表作《牡丹亭》作者汤显祖','"百戏之祖"，京剧等剧种多受其滋养'],
+    type:'stitch'
+  },
+  {
+    id:'yunjin', emoji:'🧵', name:'南京云锦', city:'南京', tag:'寸锦寸金',
+    desc:'南京传统提花丝织工艺品，始于东晋、盛于明清，因锦纹如云霞得名。为皇家御用龙袍面料，大花楼木织机二人配合，一天仅织五厘米，寸锦寸金。',
+    facts:['大花楼木织机长5.6米，两人一天仅织5厘米','2009年作为中国蚕桑丝织技艺入选人类非遗','与蜀锦、宋锦、壮锦并称四大名锦','明清专设江宁织造署，《红楼梦》作者曹雪芹家即任职此'],
+    type:'stitch'
+  },
+  {
+    id:'longjing', emoji:'🍵', name:'龙井制茶', city:'杭州', tag:'西湖春茶',
+    desc:'西湖龙井茶炒制技艺是国家级非遗。清明前采一芽一叶，经抖、搭、拓、捺、甩、抓、推、扣等十大手法手工炒制，扁平光滑、豆香清雅，"色绿、香郁、味甘、形美"四绝。',
+    facts:['十大炒制手法全凭手感，火候全靠师傅经验','明前茶最贵，一斤需数万颗芽头','2008年列入国家级非遗','狮峰、龙井、云栖、虎跑为四大核心产区'],
+    type:'wave'
+  },
+  {
+    id:'qinqiang', emoji:'🎤', name:'秦腔', city:'西安', tag:'黄土高坡的呐喊',
+    desc:'陕西地方大戏，起于西周、成熟于秦，故称秦腔。唱腔高亢激越、宽音大嗓，"一声喊破长安天"。脸谱粗犷、动作夸张，是梆子腔的鼻祖。',
+    facts:['中国梆子腔的鼻祖，影响豫剧、晋剧等','唱腔分欢音、苦音，喜悲分明','2006年列入首批国家级非遗','传统剧目繁多，《三滴血》《周仁回府》为经典'],
+    type:'fire'
+  },
+  {
+    id:'dunhuang', emoji:'🎨', name:'敦煌壁画临摹', city:'敦煌', tag:'石壁上的丝路',
+    desc:'敦煌莫高窟始建于前秦，存壁画4.5万平方米。历代画工以矿物颜料绘飞天、经变、供养人，色彩千年不褪。敦煌研究院几代人以"对洞临摹"技艺复原壁画。',
+    facts:['现存洞窟735个、壁画4.5万平方米、彩塑2400余身','矿物颜料：石青、石绿、朱砂、金粉','飞天从十六国到元代形象不断演变','1987年列入世界文化遗产'],
+    type:'dye'
+  },
+  {
+    id:'dongba', emoji:'📜', name:'东巴纸与东巴文', city:'丽江', tag:'活着的象形文字',
+    desc:'纳西族东巴文化，东巴文是世界上仍在使用的象形文字之一。东巴纸以荛花树皮手工制成，防虫耐久、可存千年。东巴祭司用它写经、占卜、画谱。',
+    facts:['东巴文约1400个单字，是活的象形文字','东巴纸以荛花为料，虫不蛀、可存千年','2003年东巴古籍文献列入世界记忆遗产','2006年东巴画列入国家级非遗'],
+    type:'fire'
+  },
+  {
+    id:'tangsancai', emoji:'🐎', name:'唐三彩烧制', city:'洛阳', tag:'盛唐的釉色',
+    desc:'唐代低温铅釉陶器，以黄、绿、白三色为主，洛阳为烧制中心。唐三彩陶马、骆驼、仕女造型丰腴饱满，是盛唐丝路繁荣的见证，2008年列入国家级非遗。',
+    facts:['低温铅釉，800℃烧成，釉色流淌交融','常见器型：马、骆驼、仕女、俑','多作陪葬明器，盛唐随葬之风盛行','2008年唐三彩烧制技艺列入国家级非遗'],
+    type:'fan'
+  },
+];
+
+// 主界面非遗文化墙：挑 6 项（川渝在前，兼顾全国）做成醒目卡片
+function renderHeritageRail(){
+  var box=document.getElementById('hrList');
+  if(!box) return;
+  var picks=[];
+  var sc=['shu embroidery','sichuan opera'];
+  // 优先川渝项
+  var order=['bianlian','shuxiu','haozi','longwu','zhubian','zharan'];
+  order.forEach(function(id){ var it=HERITAGE.find(function(h){return h.id===id}); if(it) picks.push(it); });
+  HERITAGE.forEach(function(it){ if(picks.length<6 && picks.indexOf(it)<0) picks.push(it); });
+  picks=picks.slice(0,6);
+  box.innerHTML=picks.map(function(it,i){
+    return '<div class="hr-card" onclick="askHeritageRail(\''+it.id+'\')">'+
+      '<div class="hrc-top"><div class="hrc-emoji">'+it.emoji+'</div>'+
+      '<div><div class="hrc-name">'+it.name+'</div>'+
+      '<div class="hrc-loc">📍 '+it.city+'</div></div></div>'+
+      '<div class="hrc-desc">'+(it.tag||'')+'：'+(it.desc||'').slice(0,42)+'…</div></div>';
+  }).join('');
+}
+function askHeritageRail(id){
+  var it=HERITAGE.find(function(h){return h.id===id});
+  if(!it) return;
+  // 根据非遗所属城市切换到对应接待官
+  var cityIp = Object.keys(IP_CITY_NAME).find(function(ip){ return IP_CITY_NAME[ip] === it.city; });
+  if(cityIp) applyIP(cityIp, false);
+  document.getElementById('input').value='详细介绍一下'+it.name+'这项非遗，包括历史、代表作品、在哪里能看到/体验';
+  send();
+}
+renderHeritageRail();
+
+// 每次打开系统自动清空历史对话（生成新会话，不显示旧记录）
+(function(){
+  // 生成全新 session id
+  const newSid = 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+  localStorage.setItem('cz_session_id', newSid);
+  // 清空聊天区，显示欢迎页
+  const msgs = document.getElementById('messages');
+  if(msgs){
+    msgs.innerHTML = `
+      <div class="welcome">
+        <h2>🏙️ 你好，我是小知</h2>
+        <p>我是城知总控官，你的专属文旅调度助手。<br>
+        告诉我你在哪个城市、想玩几天，我来帮你安排。<br>
+        <span style="font-size:11px;color:#aaa">例如："重庆3天2晚带老人"或"成都到西安怎么走"</span></p>
+      </div>`;
+  }
+  try { applyIP('master', false); } catch(e){}
+})();
+
+function openHeritage(){
+  document.getElementById('heritageOverlay').classList.add('show');
+  renderHeritageGrid();
+}
+function closeHeritage(){
+  document.getElementById('heritageOverlay').classList.remove('show');
+  document.getElementById('hGridView').classList.add('show');
+  document.getElementById('hDetailView').classList.remove('show');
+}
+function renderHeritageGrid(){
+  document.getElementById('hGridView').classList.add('show');
+  document.getElementById('hDetailView').classList.remove('show');
+  const g = document.getElementById('hGrid');
+  g.innerHTML = HERITAGE.map((h,i) => `
+    <div class="h-card" onclick="openHeritageDetail(${i})">
+      <div class="h-img"><img src="images/${h.id}.jpg" alt="${h.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.dataset.fb='${h.emoji}'"></div>
+      <div class="nm">${h.name}</div>
+      <div class="ct">📍 ${h.city}</div>
+      <div class="tg">${h.tag}</div>
+    </div>
+  `).join('');
+}
+function openHeritageDetail(i){
+  const h = HERITAGE[i];
+  document.getElementById('hGridView').classList.remove('show');
+  document.getElementById('hDetailView').classList.add('show');
+  document.getElementById('hDetailName').textContent = h.name;
+  document.getElementById('hDetailMeta').textContent = '📍 ' + h.city + ' · ' + h.tag;
+  document.getElementById('hDetailDesc').textContent = h.desc;
+  document.getElementById('hDetailFacts').innerHTML = h.facts.map(f=>`<li>${f}</li>`).join('');
+  // 互动舞台
+  const stage = document.getElementById('hStage');
+  stage.innerHTML = buildInteraction(h.type, h);
+  // 问 AI 按钮
+  document.getElementById('hAskBtn').onclick = () => askAIAbout(h.name, h.city);
+}
+
+function buildInteraction(type, h){
+  if (type === 'mask') {
+    // 川剧变脸：3 张脸谱 SVG 切换
+    const masks = [
+      {face:'#c0392b', eyebrow:'#000', eye:'#000', cheek:'#e74c3c'},
+      {face:'#1a3a4a', eyebrow:'#f1c40f', eye:'#fff', cheek:'#2980b9'},
+      {face:'#2d6a4f', eyebrow:'#000', eye:'#f1c40f', cheek:'#27ae60'},
+    ];
+    return `
+      <svg class="mask-face" id="maskSvg" viewBox="0 0 100 120">
+        <ellipse cx="50" cy="55" rx="32" ry="40" id="maskFace" fill="${masks[0].face}"/>
+        <path d="M30 45 Q40 38 50 45" stroke="#000" stroke-width="2" fill="none" id="maskEB1"/>
+        <path d="M50 45 Q60 38 70 45" stroke="#000" stroke-width="2" fill="none" id="maskEB2"/>
+        <ellipse cx="38" cy="55" rx="4" ry="3" fill="#000"/>
+        <ellipse cx="62" cy="55" rx="4" ry="3" fill="#000"/>
+        <path d="M40 80 Q50 85 60 80" stroke="#000" stroke-width="2" fill="none"/>
+      </svg>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doBianlian()">🎭 点我变脸</button>
+      </div>`;
+  }
+  if (type === 'stitch') {
+    // 针脚逐根出现
+    return `
+      <svg width="200" height="140" class="stitch" id="stitchSvg" viewBox="0 0 200 140">
+        ${Array.from({length:8}).map((_,r)=>
+          Array.from({length:12}).map((_,c)=>
+            `<line class="stitch-line" x1="${15+c*15}" y1="${15+r*15}" x2="${25+c*15}" y2="${15+r*15}" stroke="#8e44ad" stroke-width="1.5"/>`
+          ).join('')
+        ).join('')}
+      </svg>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doStitch()">🪡 开始刺绣</button>
+      </div>`;
+  }
+  if (type === 'wave') {
+    // 号子波纹
+    return `
+      <div id="waveBox" style="display:flex;align-items:flex-end;height:80px">
+        ${Array.from({length:20}).map(()=>`<span class="wave-bar"></span>`).join('')}
+      </div>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doWave()">🚢 一起喊号子</button>
+      </div>`;
+  }
+  if (type === 'lantern') {
+    // 龙灯逐个点亮
+    return `
+      <div class="lantern-chain" id="lanternBox">
+        ${Array.from({length:18}).map(()=>`<div class="l"></div>`).join('')}
+      </div>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doLantern()">🐉 点亮龙灯</button>
+      </div>`;
+  }
+  if (type === 'dye') {
+    // 扎染扩散
+    return `
+      <div class="tie-dye" id="tieDye"><div class="blob"></div></div>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doDye()">🎨 投入染缸</button>
+      </div>`;
+  }
+  if (type === 'fan') {
+    // 折扇展开
+    return `
+      <svg class="fan" id="fanSvg" viewBox="0 0 200 120">
+        ${Array.from({length:9}).map((_,i)=>{
+          const angle = -80 + i*20;
+          return `<g class="blade" style="transform:rotate(${angle}deg)"><line x1="100" y1="110" x2="${100+70*Math.sin(angle*Math.PI/180)}" y2="${110-70*Math.cos(angle*Math.PI/180)}" stroke="#8b4513" stroke-width="2"/></g>`;
+        }).join('')}
+      </svg>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doFan()">🪭 展开折扇</button>
+      </div>`;
+  }
+  if (type === 'fire') {
+    // 篝火
+    return `
+      <div class="fire" id="fireBox"><div class="flame"></div></div>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center">
+        <button class="h-interact" onclick="doFire()">🔥 点燃篝火</button>
+      </div>`;
+  }
+  return '<div style="font-size:48px">✨</div>';
+}
+
+// 互动动作
+let maskIdx = 0;
+const MASKS = [
+  {face:'#c0392b',}, {face:'#1a3a4a'}, {face:'#2d6a4f'}, {face:'#8e44ad'}
+];
+function doBianlian(){
+  maskIdx = (maskIdx+1) % MASKS.length;
+  const f = document.getElementById('maskFace');
+  if (f) f.setAttribute('fill', MASKS[maskIdx].face);
+}
+function doStitch(){
+  document.getElementById('stitchSvg').classList.toggle('on');
+}
+function doWave(){
+  const bars = document.querySelectorAll('#waveBox .wave-bar');
+  bars.forEach((b,i)=>{
+    setTimeout(()=>{ b.style.height = (10 + Math.random()*50) + 'px'; }, i*80);
+  });
+}
+function doLantern(){
+  const ls = document.querySelectorAll('#lanternBox .l');
+  ls.forEach((l,i)=>{ setTimeout(()=>l.classList.toggle('on'), i*100); });
+}
+function doDye(){
+  document.getElementById('tieDye').classList.toggle('on');
+}
+function doFan(){
+  document.getElementById('fanSvg').classList.toggle('on');
+}
+function doFire(){
+  document.getElementById('fireBox').classList.toggle('on');
+}
+
+function askAIAbout(name, city){
+  closeHeritage();
+  if(city){
+    var cityIp = Object.keys(IP_CITY_NAME).find(function(ip){ return IP_CITY_NAME[ip] === city; });
+    if(cityIp) applyIP(cityIp, false);
+  }
+  document.getElementById('input').value = `详细介绍一下${name}这项非遗，包括历史、代表作品、在哪里能看到/体验`;
+  send();
+}
+
+// 顶部闪现 toast
+let _toastTimer = null;
+function showToast(msg){
+  let t = document.getElementById('czToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'czToast';
+    t.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;padding:10px 24px;border-radius:24px;z-index:999;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:opacity 0.3s;opacity:0;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>{ t.style.opacity = '0'; }, 2500);
+}
+
+// 导出当前对话为 Markdown
+async function exportMarkdown(){
+  const sid = getSessionId();
+  try {
+    const resp = await fetch(API_BASE + '/api/history?session_id=' + encodeURIComponent(sid));
+    const data = await resp.json();
+    if (!data.messages || data.messages.length === 0) {
+      alert('当前还没有对话内容可导出');
+      return;
+    }
+    let md = `# 城知文旅对话记录\n\n`;
+    md += `> 导出时间：${new Date().toLocaleString('zh-CN')}\n\n---\n\n`;
+    for (const m of data.messages) {
+      const who = m.role === 'user' ? '🧑 我' : '🤖 ' + (IP_DATA[m.ip]?.name || '城知');
+      md += `## ${who}\n\n${m.content}\n\n`;
+    }
+    const blob = new Blob([md], {type: 'text/markdown;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `城知对话_${new Date().toISOString().slice(0,10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('导出失败：' + e.message);
+  }
+}
+
+// ========== 团建方案表单 ==========
+function openTeamForm(){
+  // 默认日期：今天 + 30 天
+  if (!document.getElementById('tDate').value) {
+    const d = new Date(); d.setDate(d.getDate()+30);
+    document.getElementById('tDate').value = d.toISOString().slice(0,10);
+  }
+  document.getElementById('teamOverlay').classList.add('show');
+}
+function closeTeamForm(){
+  document.getElementById('teamOverlay').classList.remove('show');
+}
+
+// ---------- 预算测算 ----------
+function openBudgetForm(){
+  document.getElementById('bResult').style.display = 'none';
+  // 自动带入当前对话城市，默认经济档
+  const curCity = IP_CITY_NAME[currentIP] || '成都';
+  document.getElementById('bCity').value = curCity;
+  document.getElementById('bLevel').value = '经济';
+  document.getElementById('budgetOverlay').classList.add('show');
+}
+function closeBudgetForm(){
+  document.getElementById('budgetOverlay').classList.remove('show');
+}
+function openPrivacy(){
+  document.getElementById('privacyOverlay').classList.add('show');
+}
+function closePrivacy(){
+  document.getElementById('privacyOverlay').classList.remove('show');
+}
+
+// ========== 路况地图面板 ==========
+var _amapLoaded=false, _mapInst=null;
+var CITY_CENTER = {
+  '成都':[104.0668,30.5728],'重庆':[106.5516,29.5630],'北京':[116.4074,39.9042],
+  '上海':[121.4737,31.2304],'西安':[108.9402,34.3416],'杭州':[120.1551,30.2741],
+  '苏州':[120.5853,31.2989],'南京':[118.7969,32.0603],'广州':[113.2644,23.1291],
+  '深圳':[114.0579,22.5431],'厦门':[118.0894,24.4798],'武汉':[114.3055,30.5928],
+  '长沙':[112.9388,28.2282],'昆明':[102.8329,24.8801],'青岛':[120.3826,36.0671],
+  '三亚':[109.5119,18.2528],'丽江':[100.2270,26.8552],'哈尔滨':[126.5349,45.8038],
+  '洛阳':[112.4540,34.6197],'桂林':[110.2900,25.2736],'张家界':[110.4792,29.1171]
+};
+function _loadAMap(cb){
+  if(_amapLoaded && window.AMap){ cb(); return; }
+  fetch(API_BASE+'/api/amap-key').then(r=>r.json()).then(d=>{
+    if(!d.key){ document.getElementById('trafficMap').innerHTML='<p style="padding:20px;color:#888">未配置高德地图密钥</p>'; return; }
+    window._amapCb=cb;
+    var s=document.createElement('script');
+    s.src='https://webapi.amap.com/maps?v=2.0&key='+d.key+'&callback=_amapCb';
+    s.onerror=function(){ document.getElementById('trafficMap').innerHTML='<p style="padding:20px;color:#c0392b">地图加载失败，请检查网络或密钥</p>'; };
+    document.head.appendChild(s);
+  });
+}
+// 打开前先向后端取当前城市中文名
+function openTraffic(){
+  fetch(API_BASE+'/api/amap-key?ip='+encodeURIComponent(currentIP)).then(r=>r.json()).then(d=>{
+    document.getElementById('tCityName').textContent=d.city||'成都';
+    _openTrafficMap();
+  }).catch(function(){ _openTrafficMap(); });
+}
+function _openTrafficMap(){
+  document.getElementById('trafficOverlay').classList.add('show');
+  var city=document.getElementById('tCityName').textContent||'成都';
+  document.getElementById('tWeather').innerHTML='<b>📍 '+city+'</b><br>正在加载实时路况…';
+  _loadAMap(function(){
+    var c=CITY_CENTER[city]||[104.0668,30.5728];
+    if(!_mapInst){
+      _mapInst=new AMap.Map('trafficMap',{ zoom:12, center:c });
+      _mapInst.add(new AMap.TrafficLayer({ zIndex:10 }));
+    } else {
+      _mapInst.setCenter(c); _mapInst.setZoom(12);
+    }
+  });
+  fetch(API_BASE+'/api/traffic?city='+encodeURIComponent(city)).then(r=>r.json()).then(d=>{
+    var box=document.getElementById('tCong');
+    if(d.status==='ok' && d.congested_roads && d.congested_roads.length){
+      box.innerHTML=d.congested_roads.map(function(r){
+        var lv=r.lcode||'未知';
+        var cls=(lv.indexOf('畅通')>=0)?'free':'';
+        return '<div class="cong-item '+cls+'">📍'+r.name+'<br>路况：'+lv+'　限速约'+(r.speed||'-')+'km/h</div>';
+      }).join('');
+    } else {
+      box.innerHTML='<div class="cong-item free">当前无明显拥堵路段，整体畅通 ✅</div>';
+    }
+  }).catch(function(){ document.getElementById('tCong').innerHTML='<div class="cong-item">路况获取失败</div>'; });
+}
+function closeTraffic(){
+  document.getElementById('trafficOverlay').classList.remove('show');
+}
+async function runBudget(){
+  const city = document.getElementById('bCity').value.trim();
+  const people = parseInt(document.getElementById('bPeople').value,10)||2;
+  const days = parseInt(document.getElementById('bDays').value,10)||2;
+  const level = document.getElementById('bLevel').value;
+  const box = document.getElementById('bResult');
+  box.style.display='block';
+  box.innerHTML = '测算中…';
+  try {
+    const r = await fetch(API_BASE+'/api/budget', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({city, people, days, level})
+    });
+    const d = await r.json();
+    const b = d.per_person_breakdown||{};
+    box.innerHTML = `
+      <table>
+        <tr><th>🏙️ ${d.city} · ${d.days}天 · ${d.people}人（${d.level}档）</th><td></td></tr>
+        <tr><th>餐饮</th><td>人均约 ${b['餐饮']} 元</td></tr>
+        <tr><th>住宿</th><td>人均约 ${b['住宿']} 元</td></tr>
+        <tr><th>门票</th><td>人均约 ${b['门票']} 元</td></tr>
+        <tr><th>市内交通</th><td>人均约 ${b['市内交通']} 元</td></tr>
+        <tr class="total-row"><td>人均合计</td><td>约 ${d.per_person_total} 元</td></tr>
+        <tr class="total-row"><td>${d.people}人总计</td><td>约 ${d.group_total} 元</td></tr>
+      </table>
+      <div class="budget-note">📌 ${d.note}</div>`;
+  } catch(e) {
+    box.innerHTML = '<div class="budget-note">测算失败，请检查网络后重试。</div>';
+  }
+}
+// 偏好 chips 多选
+document.querySelectorAll('#tPrefs .team-chip').forEach(c=>{
+  c.addEventListener('click', ()=> c.classList.toggle('on'));
+});
+function submitTeamForm(){
+  const city = document.getElementById('tCity').value;
+  const people = parseInt(document.getElementById('tPeople').value,10) || 20;
+  const date = document.getElementById('tDate').value;
+  const days = document.getElementById('tDays').value;
+  const budget = parseInt(document.getElementById('tBudget').value,10) || 800;
+  const prefs = Array.from(document.querySelectorAll('#tPrefs .team-chip.on')).map(c=>c.dataset.v);
+  const prefText = prefs.length ? prefs.join('、') : '不限';
+
+  if (people < 5) { alert('人数至少 5 人哦'); return; }
+
+  const dateText = date ? `，计划出行日期 ${date}` : '';
+  const prompt =
+`请帮我们公司出一份${city}团建方案：公司共${people}人，行程${days}${dateText}，人均预算约${budget}元（总预算约${people*budget}元）。团建偏好：${prefText}。
+
+请务必先调用工具（scenic 查景点门票、weather 查天气、knowledge 查当地文化、web_search 查最新团建/活动信息），再基于工具结果输出完整方案，包含：
+1. 每日详细行程安排（每个时段给出具体景点/活动/餐厅名称，不要泛泛而谈）
+2. 预算明细表：门票/餐饮/交通/团建活动四块，分别按人均和总额估算
+3. 3-4 个团队互动环节设计（破冰、协作类，可落地）
+4. 雨天或交通延误的 1-2 个室内备选
+5. 注意事项与避坑提醒
+全程用当地朋友的口吻，亲切自然。`;
+
+  closeTeamForm();
+  document.getElementById('input').value = prompt;
+  send();
+}
+
+// ESC 关闭
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeHeritage(); closeTeamForm(); closeBudgetForm(); closePrivacy(); closeTraffic(); }
+});
+</script>
+</body>
+</html>

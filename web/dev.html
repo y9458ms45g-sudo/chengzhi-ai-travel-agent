@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>城知 · 开发者控制台</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Microsoft YaHei",system-ui,sans-serif;background:#0f2530;color:#e8e6e1;min-height:100vh}
+  .hd{background:#1a3a4a;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2d6a4f}
+  .hd h1{font-size:20px;color:#fff}
+  .hd .st{font-size:13px;color:#7fd9a8}
+  .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:20px}
+  .card{background:#163040;border:1px solid #244; border-radius:12px;padding:20px;transition:.15s}
+  .card:hover{border-color:#2d6a4f;transform:translateY(-2px)}
+  .card .ic{font-size:32px;margin-bottom:10px}
+  .card h3{font-size:16px;color:#fff;margin-bottom:6px}
+  .card p{font-size:12px;color:#9ab;line-height:1.6}
+  .card a,.card button{display:inline-block;margin-top:12px;padding:8px 16px;background:#2d6a4f;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;border:0;cursor:pointer}
+  .card button.sec{background:#345}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+  .stat{background:#163040;border-radius:10px;padding:14px;text-align:center}
+  .stat .n{font-size:26px;font-weight:700;color:#7fd9a8}
+  .stat .l{font-size:12px;color:#9ab;margin-top:4px}
+  .section{background:#163040;border-radius:12px;padding:18px 20px;margin-bottom:16px}
+  .section h2{font-size:15px;color:#fff;margin-bottom:12px;border-left:3px solid #2d6a4f;padding-left:10px}
+  .section code{background:#0a1a22;padding:2px 6px;border-radius:4px;color:#ffd479;font-size:12px}
+  .section ol,.section ul{margin-left:20px;font-size:13px;line-height:1.9;color:#cde}
+  .login{max-width:340px;margin:120px auto;background:#163040;border-radius:12px;padding:32px}
+  .login input{width:100%;padding:10px;margin:8px 0;background:#0f2530;border:1px solid #244;border-radius:8px;color:#fff}
+  .login button{width:100%;padding:10px;background:#2d6a4f;color:#fff;border:0;border-radius:8px;cursor:pointer;margin-top:8px}
+  .err{color:#e57373;font-size:13px;margin-top:8px}
+  .hide{display:none}
+</style>
+</head>
+<body>
+
+<div class="login" id="loginBox">
+  <h1 style="color:#fff;margin-bottom:8px">🔧 开发者控制台</h1>
+  <p style="font-size:12px;color:#9ab;margin-bottom:10px">此页仅开发者可见</p>
+  <input type="password" id="pwd" placeholder="管理员密码">
+  <button onclick="login()">进入</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<div id="mainBox" class="hide">
+  <div class="hd">
+    <h1>🔧 城知 · 开发者控制台</h1>
+    <div class="st" id="status">● 在线</div>
+  </div>
+  <div class="wrap">
+
+    <div class="stats" id="stats"></div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="ic">💬</div>
+        <h3>用户端</h3>
+        <p>给终端用户用的对话界面。小知总控官 + 73城子 Agent + 非遗墙。</p>
+        <a href="/" target="_blank">打开用户端 →</a>
+      </div>
+      <div class="card">
+        <div class="ic">📊</div>
+        <h3>管理后台</h3>
+        <p>会话浏览、差评工单、用户偏好、数据总览。</p>
+        <a href="/admin" target="_blank">打开管理后台 →</a>
+      </div>
+      <div class="card">
+        <div class="ic">📚</div>
+        <h3>API 文档</h3>
+        <p>FastAPI 自动生成的接口文档，可在线调试所有后端接口。</p>
+        <a href="/docs" target="_blank">打开 /docs →</a>
+      </div>
+      <div class="card">
+        <div class="ic">💾</div>
+        <h3>数据备份</h3>
+        <p>一键下载整个对话数据库 chat.db，改坏了可回滚。</p>
+        <button onclick="backup()">⬇️ 下载 chat.db</button>
+      </div>
+      <div class="card">
+        <div class="ic">📂</div>
+        <h3>数据/日志目录</h3>
+        <p>SQLite 库、日志文件都在项目 data/ 与 logs/ 目录。</p>
+        <button class="sec" onclick="alert('请打开：C:\\Users\\Administrator\\wenlv-agent\\data')">打开目录</button>
+      </div>
+      <div class="card">
+        <div class="ic">🔄</div>
+        <h3>重启后端</h3>
+        <p>改完 .py 必须重启。关掉"城知后端"黑窗口，双击桌面"城知文旅"快捷方式。</p>
+        <button class="sec" onclick="alert('关闭标题为「城知后端」的最小化黑窗口，再双击桌面「城知文旅」即可')">查看步骤</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🚀 开发者日常工作流</h2>
+      <ol>
+        <li><b>改前端 UI / 文案 / 样式</b> → 编辑 <code>web/index.html</code>（或 <code>admin.html</code>），浏览器按 <code>Ctrl+F5</code> 刷新即生效，<b>不用重启</b>。</li>
+        <li><b>改后端逻辑 / 工具 / 提示词</b> → 编辑 <code>app/</code> 下 .py，<b>必须重启后端</b>（见上方"重启后端"）。</li>
+        <li><b>测城市识别</b> → 终端跑 <code>python -m tests.run_eval --fast</code>，应 100% 通过。</li>
+        <li><b>看用户在聊什么</b> → 管理后台 → 会话列表。</li>
+        <li><b>找答得差的</b> → 管理后台 → 差评工单。</li>
+        <li><b>发布前</b> → 点"下载 chat.db"备份。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>📁 关键文件位置</h2>
+      <ul>
+        <li>用户端页面：<code>web/index.html</code></li>
+        <li>管理后台：<code>web/admin.html</code></li>
+        <li>Agent 主循环：<code>app/agent/executor.py</code></li>
+        <li>LLM 调用+重试：<code>app/llm.py</code></li>
+        <li>内容安全：<code>app/safety.py</code></li>
+        <li>数据存储：<code>app/data/chat.db</code></li>
+        <li>接口 Key：<code>.env</code>（不要提交/外发）</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let TOKEN = localStorage.getItem('admin_token') || '';
+const API = (location.protocol === 'http:' || location.protocol === 'https:')
+  ? location.origin : 'http://localhost:8000';
+
+async function login(){
+  const pwd = document.getElementById('pwd').value;
+  if(!pwd){ document.getElementById('loginErr').textContent='请输入密码'; return; }
+  try {
+    const r = await fetch(API+'/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+    if(r.ok){ const d=await r.json(); TOKEN=d.token; localStorage.setItem('admin_token',TOKEN); enter(); }
+    else { document.getElementById('loginErr').textContent='密码错误，请重试'; }
+  } catch(e) {
+    document.getElementById('loginErr').textContent='⚠️ 连不上后端('+API+')。请先双击桌面"城知文旅"启动后端，再用浏览器访问 http://localhost:8000/dev';
+  }
+}
+async function loadStats(){
+  try{
+    const r = await fetch(API+'/api/dev/status',{headers:{Authorization:'Bearer '+TOKEN}});
+    if(r.status===401){ localStorage.removeItem('admin_token'); location.reload(); return; }
+    const s = await r.json();
+    document.getElementById('stats').innerHTML = [
+      ['在跑会话', s.sessions], ['消息总数', s.messages],
+      ['👍好评', s.fb_good], ['👎差评', s.fb_bad],
+      ['记忆用户', s.profiles], ['运行时长', Math.floor(s.uptime_s/60)+'分钟']
+    ].map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  }catch(e){ console.warn(e); }
+}
+function backup(){
+  fetch(API+'/api/admin/backup',{headers:{Authorization:'Bearer '+TOKEN}}).then(r=>r.blob()).then(b=>{
+    const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='chat_backup.db'; a.click();
+  });
+}
+function enter(){
+  document.getElementById('loginBox').classList.add('hide');
+  document.getElementById('mainBox').classList.remove('hide');
+  loadStats();
+}
+if(TOKEN) enter();
+</script>
+</body>
+</html>

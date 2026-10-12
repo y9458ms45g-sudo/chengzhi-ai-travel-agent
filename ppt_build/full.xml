@@ -1,0 +1,825 @@
+<presentation id="DtHTsuXigluBUnde3LocwRXLnFb" xmlns="https://www.larkoffice.com/sml/2.0" width="960" height="540">
+  <title>城知AI文旅Agent 比赛演示</title>
+  <theme>
+    <textStyles>
+      <headline fontColor="rgba(31, 35, 41, 1)"/>
+      <sub-headline fontColor="rgba(31, 35, 41, 1)"/>
+      <body fontColor="rgba(31, 35, 41, 1)"/>
+      <caption fontColor="rgba(155, 158, 162, 1)" fontSize="14"/>
+    </textStyles>
+  </theme>
+  <slide id="pee">
+    <style>
+      <fill id="fee">
+        <fillColor color="linear-gradient(135deg,rgba(26, 58, 74, 1) 0%,rgba(45, 106, 79, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="64" height="64" topLeftX="80" topLeftY="200" presetHandlers="0" type="rect" id="bVT">
+        <fill>
+          <fillColor color="rgba(192, 57, 43, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="64" height="64" topLeftX="80" topLeftY="200" type="text" id="bVh">
+        <content textType="title" fontSize="32" fontFamily="思源宋体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center">
+          <p>城</p>
+        </content>
+      </shape>
+      <shape width="700" height="80" topLeftX="170" topLeftY="188" type="text" id="bVQ">
+        <content textType="title" fontSize="60" fontFamily="思源宋体" color="rgba(255, 255, 255, 1)" bold="true" letterSpacing="4" textAlign="left">
+          <p>城知</p>
+        </content>
+      </shape>
+      <shape width="700" height="40" topLeftX="172" topLeftY="278" type="text" id="bVY">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(255, 255, 255, 0.902)" bold="true" textAlign="left">
+          <p>川渝文化IP对话系统 · AI文旅Agent</p>
+        </content>
+      </shape>
+      <line id="bVw" startX="84" startY="360" endX="200.00431026474837" endY="360">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="800" height="36" topLeftX="84" topLeftY="380" type="text" id="bVq">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(255, 255, 255, 0.749)" textAlign="left">
+          <p>9 城 IP 拟人接待官 ｜ AI 自动城市转接 ｜ 非遗互动馆 ｜ 一键团建方案生成</p>
+        </content>
+      </shape>
+      <shape width="800" height="28" topLeftX="84" topLeftY="470" type="text" id="bVc">
+        <content textType="caption" fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 0.502)" textAlign="left">
+          <p>FastAPI · SSE 流式 · SQLite · DeepSeek · ReAct 多工具调度</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bVV">
+      <content>
+        <p>各位评委好，我们带来的项目叫&quot;城知&quot;，是一个川渝文化IP对话式文旅Agent。</p>
+        <p>它把川渝9座城市分别拟人格化接待官，游客像聊天一样提问，系统会自动识别城市、转接对应IP，并实时调用天气、知识库、联网搜索等工具给出靠谱的行程建议。</p>
+        <p>今天演示重点是三个亮点：AI自动城市转接、非遗互动馆、以及刚完成的一键团建方案生成。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peb">
+    <style>
+      <fill id="feb">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="50" topLeftX="80" topLeftY="60" type="text" id="bVD">
+        <content textType="title" fontSize="32" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>川渝文旅很火，游客决策却很累</p>
+        </content>
+      </shape>
+      <line id="bVg" startX="80" startY="128" endX="160.00624975587843" endY="128">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="340" height="34" topLeftX="80" topLeftY="160" type="text" id="bVN">
+        <content textType="headline" fontSize="18" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>传统攻略的三个痛</p>
+        </content>
+      </shape>
+      <shape width="8" height="8" topLeftX="80" topLeftY="210" presetHandlers="0" type="rect" id="bVm">
+        <fill>
+          <fillColor color="rgba(192, 57, 43, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="320" height="60" topLeftX="100" topLeftY="200" type="text" id="bVP">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.4">
+          <p>信息散落在十几个平台，小红书、大众点评、马蜂窝来回切</p>
+        </content>
+      </shape>
+      <shape width="8" height="8" topLeftX="80" topLeftY="290" presetHandlers="0" type="rect" id="bVs">
+        <fill>
+          <fillColor color="rgba(192, 57, 43, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="320" height="60" topLeftX="100" topLeftY="280" type="text" id="bVW">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.4">
+          <p>攻略千人一面，不关心你是几个人、什么预算、几天行程</p>
+        </content>
+      </shape>
+      <shape width="8" height="8" topLeftX="80" topLeftY="370" presetHandlers="0" type="rect" id="bVC">
+        <fill>
+          <fillColor color="rgba(192, 57, 43, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="320" height="60" topLeftX="100" topLeftY="360" type="text" id="bVM">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.4">
+          <p>到了当地才发现：门票涨价、景点闭馆、天气下雨、排队长龙</p>
+        </content>
+      </shape>
+      <line id="bVv" startX="480" startY="170" endX="480" endY="430.00192306981114">
+        <border color="rgba(180, 175, 165, 1)" dashArray="dot" width="1"/>
+      </line>
+      <shape width="340" height="34" topLeftX="540" topLeftY="160" type="text" id="bVe">
+        <content textType="headline" fontSize="18" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)" bold="true">
+          <p>城知的三个解法</p>
+        </content>
+      </shape>
+      <shape width="8" height="8" topLeftX="540" topLeftY="210" presetHandlers="0" type="rect" id="bVH">
+        <fill>
+          <fillColor color="rgba(45, 106, 79, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="320" height="60" topLeftX="560" topLeftY="200" type="text" id="bVa">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.4">
+          <p>一个对话入口：9 座城市拟人接待官，像本地朋友一样聊天</p>
+        </content>
+      </shape>
+      <shape width="8" height="8" topLeftX="540" topLeftY="290" presetHandlers="0" type="rect" id="bVl">
+        <fill>
+          <fillColor color="rgba(45, 106, 79, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="320" height="60" topLeftX="560" topLeftY="280" type="text" id="bVK">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.4">
+          <p>听懂人数、预算、天数、偏好，直接出可落地的定制行程</p>
+        </content>
+      </shape>
+      <shape width="8" height="8" topLeftX="540" topLeftY="370" presetHandlers="0" type="rect" id="bVj">
+        <fill>
+          <fillColor color="rgba(45, 106, 79, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="320" height="60" topLeftX="560" topLeftY="360" type="text" id="bVb">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.4">
+          <p>实时调天气、门票、路况、联网搜索，出发前就替你避坑</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bVX">
+      <content>
+        <p>川渝是顶流文旅目的地，但游客做攻略其实很累：信息散、模板化、到了才踩坑。</p>
+        <p>我们的判断是，游客要的不是&quot;又一份攻略&quot;，而是一个懂本地、能实时查、会按自己情况调整的对话伙伴。</p>
+        <p>城知就从这个切口切入。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peg">
+    <style>
+      <fill id="feg">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="46" topLeftX="80" topLeftY="56" type="text" id="bVp">
+        <content textType="title" fontSize="30" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>10 个川渝 IP，一个接待网络</p>
+        </content>
+      </shape>
+      <line id="bYq" startX="80" startY="118" endX="160.00624975587843" endY="118">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="800" height="30" topLeftX="80" topLeftY="130" type="text" id="bYX">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(90, 90, 90, 1)">
+          <p>省级接待官负责总览与路由，城市 IP 负责本地化深度解答，说哪座城就自动切到谁。</p>
+        </content>
+      </shape>
+      <table id="bYg" width="800" height="300" topLeftX="80" topLeftY="180">
+        <colgroup>
+          <col span="1" width="160"/>
+          <col span="1" width="120"/>
+          <col span="1" width="160"/>
+          <col span="1" width="360"/>
+        </colgroup>
+        <tr height="40">
+          <td id="bVF">
+            <fill>
+              <fillColor color="rgba(26, 58, 74, 1)"/>
+            </fill>
+            <content fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>层级</p>
+            </content>
+          </td>
+          <td id="bVr">
+            <fill>
+              <fillColor color="rgba(26, 58, 74, 1)"/>
+            </fill>
+            <content fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>IP 名</p>
+            </content>
+          </td>
+          <td id="bYQ">
+            <fill>
+              <fillColor color="rgba(26, 58, 74, 1)"/>
+            </fill>
+            <content fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>城市</p>
+            </content>
+          </td>
+          <td id="bYP">
+            <fill>
+              <fillColor color="rgba(26, 58, 74, 1)"/>
+            </fill>
+            <content fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>人设定位</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="37">
+          <td id="bYW">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>省级</p>
+            </content>
+          </td>
+          <td id="bVS">
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)" bold="true">
+              <p>川川</p>
+            </content>
+          </td>
+          <td id="bVL">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>四川</p>
+            </content>
+          </td>
+          <td id="bYc">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>四川省级接待官，川普，口头禅&quot;要得&quot;</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="37">
+          <td id="bYv">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>省级</p>
+            </content>
+          </td>
+          <td id="bYH">
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+              <p>渝渝</p>
+            </content>
+          </td>
+          <td id="bVO">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>重庆</p>
+            </content>
+          </td>
+          <td id="bYV">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>重庆妹子，热情直爽，口头禅&quot;巴适得板&quot;</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="37">
+          <td id="bYm">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>城市</p>
+            </content>
+          </td>
+          <td id="bYl">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>蓉蓉</p>
+            </content>
+          </td>
+          <td id="bYj">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>成都</p>
+            </content>
+          </td>
+          <td id="bVn">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>休闲之都，美食熊猫，&quot;耍安逸&quot;</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="37">
+          <td id="bYY">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>城市</p>
+            </content>
+          </td>
+          <td id="bYM">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>山山</p>
+            </content>
+          </td>
+          <td id="bYD">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>乐山</p>
+            </content>
+          </td>
+          <td id="bYN">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>大佛峨眉山，甜皮鸭钵钵鸡</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="37">
+          <td id="bVy">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>城市</p>
+            </content>
+          </td>
+          <td id="bYT">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>酒仙</p>
+            </content>
+          </td>
+          <td id="bYa">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>宜宾</p>
+            </content>
+          </td>
+          <td id="bYs">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>五粮液、蜀南竹海、李庄古镇</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="37">
+          <td id="bYC">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>城市</p>
+            </content>
+          </td>
+          <td id="bYw">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>苏苏</p>
+            </content>
+          </td>
+          <td id="bYb">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>眉山</p>
+            </content>
+          </td>
+          <td id="bYe">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>东坡故里，三苏祠、东坡美食</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="38">
+          <td id="bVZ">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>城市</p>
+            </content>
+          </td>
+          <td id="bVt">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>绵宝 / 充充 / 灯灯</p>
+            </content>
+          </td>
+          <td id="bYh">
+            <content fontSize="12" fontFamily="思源黑体">
+              <p>绵阳 / 南充 / 自贡</p>
+            </content>
+          </td>
+          <td id="bYK">
+            <content fontSize="12" fontFamily="思源黑体" textAlign="left">
+              <p>科技城 · 阆中古城 · 恐龙灯会</p>
+            </content>
+          </td>
+        </tr>
+      </table>
+    </data>
+    <note id="bVi">
+      <content>
+        <p>整个系统是两层 IP 架构：上面是川川、渝渝两个省级接待官，负责总览和路由。</p>
+        <p>下面是 8 个城市 IP，每个都有独立人设、口头禅和知识库。用户说哪座城，系统自动转接过去，不用手动选。</p>
+        <p>这张表就是我们的 IP 矩阵。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peD">
+    <style>
+      <fill id="feD">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="46" topLeftX="80" topLeftY="56" type="text" id="bVu">
+        <content textType="title" fontSize="30" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>亮点一：AI 自动城市转接</p>
+        </content>
+      </shape>
+      <line id="bVB" startX="80" startY="118" endX="160.00624975587843" endY="118">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="220" height="30" topLeftX="80" topLeftY="160" type="text" id="bVJ">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>① 用户自然输入</p>
+        </content>
+      </shape>
+      <shape width="220" height="80" topLeftX="80" topLeftY="195" type="text" id="bVI">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>&quot;去乐山吃跷脚牛肉，两天&quot;</p>
+        </content>
+      </shape>
+      <line id="bVo" startX="310" startY="225" endX="360.00999900019997" endY="225">
+        <border color="rgba(45, 106, 79, 1)"/>
+        <endArrow type="arrow"/>
+      </line>
+      <shape width="220" height="30" topLeftX="375" topLeftY="160" type="text" id="bVx">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>② 规则关键词命中</p>
+        </content>
+      </shape>
+      <shape width="220" height="80" topLeftX="375" topLeftY="195" type="text" id="bVz">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>命中&quot;乐山 / 跷脚牛肉&quot;→ 定位 leshan</p>
+        </content>
+      </shape>
+      <line id="bVG" startX="605" startY="225" endX="655.0099990002" endY="225">
+        <border color="rgba(45, 106, 79, 1)"/>
+        <endArrow type="arrow"/>
+      </line>
+      <shape width="220" height="30" topLeftX="670" topLeftY="160" type="text" id="bVd">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>③ SSE 事件自动转接</p>
+        </content>
+      </shape>
+      <shape width="260" height="80" topLeftX="670" topLeftY="195" type="text" id="bVR">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>切头像、切人设、注入城市知识库</p>
+        </content>
+      </shape>
+      <line id="bVA" startX="80" startY="320" endX="880.0006249997559" endY="320">
+        <border color="rgba(200, 195, 185, 1)" width="1"/>
+      </line>
+      <shape width="800" height="30" topLeftX="80" topLeftY="345" type="text" id="bVE">
+        <content textType="headline" fontSize="17" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)" bold="true">
+          <p>为什么用规则，而不是让大模型判断？</p>
+        </content>
+      </shape>
+      <shape width="380" height="110" topLeftX="80" topLeftY="385" type="text" id="bVk">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.6">
+          <p>· 零 token 成本，毫秒级响应</p>
+          <p>· 规则可解释、可调试、不抽风</p>
+        </content>
+      </shape>
+      <shape width="390" height="110" topLeftX="490" topLeftY="385" type="text" id="bVU">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.6">
+          <p>· 9 城关键词表维护即可，新城市 5 分钟接入</p>
+          <p>· LLM 专注内容生成，不消耗在路由上</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bVf">
+      <content>
+        <p>这是我们第一个技术决策：城市转接用关键词规则，不用大模型判断。</p>
+        <p>用户一句话进来，系统先扫关键词，命中乐山就立刻发一个 transfer 事件，前端自动把头像和人设切成山山，并把乐山知识库注入上下文。</p>
+        <p>好处是零成本、毫秒级、不抽风，比赛现场很稳。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peS">
+    <style>
+      <fill id="feS">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="46" topLeftX="80" topLeftY="56" type="text" id="bYi">
+        <content textType="title" fontSize="30" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>亮点二：川渝非遗互动馆</p>
+        </content>
+      </shape>
+      <line id="bYS" startX="80" startY="118" endX="160.00624975587843" endY="118">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="800" height="30" topLeftX="80" topLeftY="130" type="text" id="bYO">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(90, 90, 90, 1)">
+          <p>顶栏一键打开九宫格，每项非遗都能&quot;动手玩&quot;，再一键转 AI 深聊。</p>
+        </content>
+      </shape>
+      <shape width="380" height="30" topLeftX="80" topLeftY="185" type="text" id="bYy">
+        <content textType="headline" fontSize="16" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)" bold="true">
+          <p>已收录 9 项国家级非遗</p>
+        </content>
+      </shape>
+      <shape width="380" height="260" topLeftX="80" topLeftY="225" type="text" id="bYR">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.9">
+          <p>川剧变脸 ｜ 蜀绣 ｜ 蜀锦</p>
+          <p>川江号子 ｜ 铜梁龙舞</p>
+          <p>青神竹编 ｜ 自贡扎染</p>
+          <p>荣昌折扇 ｜ 羌年</p>
+        </content>
+      </shape>
+      <line id="bYI" startX="490" startY="185" endX="490" endY="470.0017543805651">
+        <border color="rgba(200, 195, 185, 1)" dashArray="dot" width="1"/>
+      </line>
+      <shape width="380" height="30" topLeftX="520" topLeftY="185" type="text" id="bYZ">
+        <content textType="headline" fontSize="16" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>每件都是可玩的小互动</p>
+        </content>
+      </shape>
+      <shape width="380" height="60" topLeftX="520" topLeftY="230" type="text" id="bYF">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>· 变脸：点一下换脸谱颜色</p>
+        </content>
+      </shape>
+      <shape width="380" height="60" topLeftX="520" topLeftY="285" type="text" id="bYn">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>· 龙灯：逐个点亮一整串灯笼</p>
+        </content>
+      </shape>
+      <shape width="380" height="60" topLeftX="520" topLeftY="340" type="text" id="bYU">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>· 号子：波纹随节奏起伏；扎染：染料在布上晕开</p>
+        </content>
+      </shape>
+      <shape width="380" height="60" topLeftX="520" topLeftY="410" type="text" id="bYx">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)">
+          <p>玩完点&quot;问问 AI&quot;，直接转成深度讲解对话</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bYz">
+      <content>
+        <p>非遗这一块我们没有做成死板的图文介绍，而是做成了一个可以点的九宫格。</p>
+        <p>9 项国家级非遗，每项配一个纯 CSS 的小互动：变脸点一下换脸谱、龙灯逐个点亮、号子波纹跳动。</p>
+        <p>玩腻了点&quot;问问AI&quot;，就直接带着这个非遗名称进入和对应城市IP的对话，形成从体验到深聊的闭环。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peJ">
+    <style>
+      <fill id="feJ">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="46" topLeftX="80" topLeftY="56" type="text" id="bYG">
+        <content textType="title" fontSize="30" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>亮点三：一键团建方案生成</p>
+        </content>
+      </shape>
+      <line id="bYu" startX="80" startY="118" endX="160.00624975587843" endY="118">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="800" height="30" topLeftX="80" topLeftY="130" type="text" id="bYk">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(90, 90, 90, 1)">
+          <p>HR 填一张表，系统自动调工具出方案——从&quot;去哪玩&quot;到&quot;多少钱&quot;一次说清。</p>
+        </content>
+      </shape>
+      <shape width="360" height="30" topLeftX="80" topLeftY="180" type="text" id="bYJ">
+        <content textType="headline" fontSize="16" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>用户只需填这几项</p>
+        </content>
+      </shape>
+      <shape width="380" height="250" topLeftX="80" topLeftY="220" type="text" id="bYA">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.9">
+          <p>· 目的地城市（9 城可选）</p>
+          <p>· 人数 / 出行日期 / 天数</p>
+          <p>· 人均预算</p>
+          <p>· 团建偏好（户外/美食/文化/亲子…）</p>
+        </content>
+      </shape>
+      <line id="bYo" startX="480" startY="180" endX="480.00000000000006" endY="470.0017241328058">
+        <border color="rgba(200, 195, 185, 1)" dashArray="dot" width="1"/>
+      </line>
+      <shape width="380" height="30" topLeftX="510" topLeftY="180" type="text" id="bYE">
+        <content textType="headline" fontSize="16" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)" bold="true">
+          <p>系统自动做这些</p>
+        </content>
+      </shape>
+      <shape width="380" height="250" topLeftX="510" topLeftY="220" type="text" id="bYd">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)" lineSpacing="multiple:1.9">
+          <p>· 调 scenic 查景点门票、weather 查天气</p>
+          <p>· 调 knowledge + web_search 找最新团建玩法</p>
+          <p>· 输出：每日行程 / 预算明细</p>
+          <p>· 团队互动环节 / 雨天备选 / 避坑提醒</p>
+        </content>
+      </shape>
+      <shape width="800" height="30" topLeftX="80" topLeftY="485" type="text" id="bYB">
+        <content textType="caption" fontSize="12" fontFamily="思源黑体" color="rgba(120, 120, 120, 1)">
+          <p>本次比赛前新完成：表单复用现有 SSE 流式通道，后端零改动，纯前端接入。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bYf">
+      <content>
+        <p>这是本次开发刚完成的功能。顶栏点&quot;团建方案&quot;弹出表单，HR 填城市、人数、日期、预算、偏好。</p>
+        <p>提交后系统自动拼成结构化指令，走原来的 ReAct 流程，自己去查景点门票、天气、最新玩法，然后给出完整方案：每日行程、预算明细、团建互动环节、雨天备选、避坑提醒。</p>
+        <p>技术上它复用了已有的流式通道，后端零改动，纯前端接入，是我们工程上&quot;快速迭代&quot;的一个例子。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pej">
+    <style>
+      <fill id="fej">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="44" topLeftX="80" topLeftY="50" type="text" id="bTh">
+        <content textType="title" fontSize="30" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>技术架构：轻量 MVP，一个文件就能跑</p>
+        </content>
+      </shape>
+      <line id="bTm" startX="80" startY="110" endX="160.00624975587843" endY="110">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="130" height="34" topLeftX="80" topLeftY="140" type="text" id="bTX">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>展示层</p>
+        </content>
+      </shape>
+      <shape width="650" height="34" topLeftX="230" topLeftY="140" type="text" id="bYt">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>单文件前端 index.html ｜ 三栏布局 ｜ SSE 打字机流式 ｜ 非遗馆 / 团建表单</p>
+        </content>
+      </shape>
+      <line id="bTw" startX="80" startY="185" endX="880.0006249997559" endY="185">
+        <border color="rgba(210, 205, 195, 1)" width="1"/>
+      </line>
+      <shape width="130" height="34" topLeftX="80" topLeftY="200" type="text" id="bTc">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>服务层</p>
+        </content>
+      </shape>
+      <shape width="650" height="34" topLeftX="230" topLeftY="200" type="text" id="bTb">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>FastAPI :8000 ｜ SSE 流式接口 ｜ 历史 / 重置 / IP 路由 REST</p>
+        </content>
+      </shape>
+      <line id="bYL" startX="80" startY="245" endX="880.0006249997559" endY="245">
+        <border color="rgba(210, 205, 195, 1)" width="1"/>
+      </line>
+      <shape width="130" height="34" topLeftX="80" topLeftY="260" type="text" id="bTT">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>Agent 层</p>
+        </content>
+      </shape>
+      <shape width="650" height="34" topLeftX="230" topLeftY="260" type="text" id="bTQ">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>ReAct 循环 ｜ 关键词城市识别 ｜ should_reset 规则 ｜ 上下文裁剪最近 10 轮</p>
+        </content>
+      </shape>
+      <line id="bTa" startX="80" startY="305" endX="880.0006249997559" endY="305">
+        <border color="rgba(210, 205, 195, 1)" width="1"/>
+      </line>
+      <shape width="130" height="34" topLeftX="80" topLeftY="320" type="text" id="bYr">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>工具层</p>
+        </content>
+      </shape>
+      <shape width="650" height="34" topLeftX="230" topLeftY="320" type="text" id="bTY">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>weather ｜ traffic ｜ knowledge ｜ web_search ｜ scenic（已扩到 9 城）</p>
+        </content>
+      </shape>
+      <line id="bTq" startX="80" startY="365" endX="880.0006249997559" endY="365">
+        <border color="rgba(210, 205, 195, 1)" width="1"/>
+      </line>
+      <shape width="130" height="34" topLeftX="80" topLeftY="380" type="text" id="bTM">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>模型/存储</p>
+        </content>
+      </shape>
+      <shape width="650" height="34" topLeftX="230" topLeftY="380" type="text" id="bTP">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>DeepSeek（OpenAI 兼容）｜ SQLite 单文件持久化 ｜ 9 份城市知识库 Markdown</p>
+        </content>
+      </shape>
+      <shape width="800" height="60" topLeftX="80" topLeftY="445" type="text" id="bYp">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(45, 106, 79, 1)">
+          <p>比赛 MVP 取舍：不上 PostgreSQL / Docker / Redis / 向量库，单机双击 start.bat 即可演示。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bTV">
+      <content>
+        <p>这是整体架构，分五层：前端、FastAPI、Agent、工具、模型存储。</p>
+        <p>关键取舍是：比赛 MVP 不上 PostgreSQL、Docker、Redis，更不上向量库，SQLite 单文件双击就能跑。</p>
+        <p>知识库也是按城市路由整个 Markdown 文件，不做向量检索，够用、稳定、好调试。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peX">
+    <style>
+      <fill id="feX">
+        <fillColor color="rgba(245, 241, 234, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="44" topLeftX="80" topLeftY="50" type="text" id="bTg">
+        <content textType="title" fontSize="30" fontFamily="思源宋体" color="rgba(26, 58, 74, 1)" bold="true">
+          <p>现场演示脚本（约 3 分钟）</p>
+        </content>
+      </shape>
+      <line id="bTf" startX="80" startY="110" endX="160.00624975587843" endY="110">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="60" height="34" topLeftX="80" topLeftY="150" type="text" id="bTs">
+        <content textType="headline" fontSize="22" fontFamily="思源宋体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>1</p>
+        </content>
+      </shape>
+      <shape width="770" height="34" topLeftX="130" topLeftY="150" type="text" id="bTW">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>开场：双击 start.bat，打开三栏主界面，介绍 10 个 IP 矩阵</p>
+        </content>
+      </shape>
+      <shape width="60" height="34" topLeftX="80" topLeftY="200" type="text" id="bTN">
+        <content textType="headline" fontSize="22" fontFamily="思源宋体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>2</p>
+        </content>
+      </shape>
+      <shape width="770" height="34" topLeftX="130" topLeftY="200" type="text" id="bTo">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>自动转接：输入&quot;成都有什么好吃的&quot;，看头像/人设自动切成蓉蓉</p>
+        </content>
+      </shape>
+      <shape width="60" height="34" topLeftX="80" topLeftY="250" type="text" id="bTG">
+        <content textType="headline" fontSize="22" fontFamily="思源宋体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>3</p>
+        </content>
+      </shape>
+      <shape width="770" height="34" topLeftX="130" topLeftY="250" type="text" id="bTv">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>工具调用：追问&quot;明天乐山天气&quot;，展示 weather 工具实时返回</p>
+        </content>
+      </shape>
+      <shape width="60" height="34" topLeftX="80" topLeftY="300" type="text" id="bTe">
+        <content textType="headline" fontSize="22" fontFamily="思源宋体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>4</p>
+        </content>
+      </shape>
+      <shape width="770" height="34" topLeftX="130" topLeftY="300" type="text" id="bTH">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>非遗馆：打开九宫格，点川剧变脸&quot;换脸&quot;，再点&quot;问问AI&quot;</p>
+        </content>
+      </shape>
+      <shape width="60" height="34" topLeftX="80" topLeftY="350" type="text" id="bTC">
+        <content textType="headline" fontSize="22" fontFamily="思源宋体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>5</p>
+        </content>
+      </shape>
+      <shape width="770" height="34" topLeftX="130" topLeftY="350" type="text" id="bTl">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>团建方案：点&quot;团建方案&quot;填表，现场生成带预算明细的完整方案</p>
+        </content>
+      </shape>
+      <shape width="60" height="34" topLeftX="80" topLeftY="400" type="text" id="bTK">
+        <content textType="headline" fontSize="22" fontFamily="思源宋体" color="rgba(192, 57, 43, 1)" bold="true">
+          <p>6</p>
+        </content>
+      </shape>
+      <shape width="770" height="34" topLeftX="130" topLeftY="400" type="text" id="bTj">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(42, 42, 42, 1)">
+          <p>收尾：点&quot;导出&quot;下载对话 Markdown，说明刷新后历史仍在</p>
+        </content>
+      </shape>
+      <shape width="800" height="30" topLeftX="80" topLeftY="470" type="text" id="bTA">
+        <content textType="caption" fontSize="12" fontFamily="思源黑体" color="rgba(120, 120, 120, 1)">
+          <p>演示前准备：先 Ctrl+F5 硬刷新前端，避免 transfer 旧 JS 缓存；确认网络可访问 DeepSeek。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bTD">
+      <content>
+        <p>这是我们彩排过的 3 分钟演示脚本，六步走。</p>
+        <p>重点秀三个：自动转接、非遗互动、团建方案；最后用导出收尾，展示对话是持久化的。</p>
+        <p>提醒一句：演示前先硬刷新，避免旧 JS 缓存导致转接不生效。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="peN">
+    <style>
+      <fill id="feN">
+        <fillColor color="linear-gradient(135deg,rgba(26, 58, 74, 1) 0%,rgba(45, 106, 79, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="800" height="50" topLeftX="80" topLeftY="110" type="text" id="bTJ">
+        <content textType="title" fontSize="34" fontFamily="思源宋体" color="rgba(255, 255, 255, 1)" bold="true">
+          <p>让川渝文化，被一次对话打开</p>
+        </content>
+      </shape>
+      <line id="bTE" startX="84" startY="180" endX="200.00431026474837" endY="180">
+        <border color="rgba(192, 57, 43, 1)" width="3"/>
+      </line>
+      <shape width="800" height="120" topLeftX="80" topLeftY="210" type="text" id="bTu">
+        <content fontSize="17" fontFamily="思源黑体" color="rgba(255, 255, 255, 0.902)" lineSpacing="multiple:1.8">
+          <p>· 10 个城市 IP 拟人，对话即接待</p>
+          <p>· 规则路由 + ReAct 工具调度，稳、快、可控</p>
+          <p>· 从自由问答、非遗互动到团建方案，闭环可用</p>
+        </content>
+      </shape>
+      <shape width="800" height="80" topLeftX="80" topLeftY="380" type="text" id="bTd">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(255, 255, 255, 0.651)" lineSpacing="multiple:1.6">
+          <p>下一步：接入更多城市 ｜ 非遗真实图片与音效 ｜ 向量检索增强 ｜ 小程序 / 多端落地</p>
+        </content>
+      </shape>
+      <shape width="800" height="30" topLeftX="80" topLeftY="470" type="text" id="bTk">
+        <content textType="headline" fontSize="18" fontFamily="思源宋体" color="rgba(255, 255, 255, 1)" bold="true">
+          <p>谢谢，请评委指正</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bTB">
+      <content>
+        <p>总结一下：城知把川渝 9 座城市拟成 10 个接待官，用对话完成从问答到行程到团建的闭环。</p>
+        <p>技术上我们坚持轻量可控，规则路由加 ReAct，比赛现场稳定可演示。</p>
+        <p>这是我们下一步想做的方向。谢谢各位评委，请批评指正。</p>
+      </content>
+    </note>
+  </slide>
+</presentation>

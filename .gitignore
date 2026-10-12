@@ -1,0 +1,30 @@
+# 密钥与环境变量（绝不能上传）
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# 向量库（可由 build_knowledge.py 重建，体积大）
+data/chroma_db/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# 日志与临时文件
+*.log
+*.tmp

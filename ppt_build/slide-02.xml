@@ -1,0 +1,89 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="60" width="800" height="50">
+      <content textType="title" fontSize="32" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>川渝文旅很火，游客决策却很累</p>
+      </content>
+    </shape>
+    <line startX="80" startY="128" endX="160" endY="128">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+
+    <!-- 左：痛点 -->
+    <shape type="text" topLeftX="80" topLeftY="160" width="340" height="34">
+      <content textType="headline" fontSize="18" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>传统攻略的三个痛</p>
+      </content>
+    </shape>
+    <shape type="rect" topLeftX="80" topLeftY="210" width="8" height="8">
+      <fill><fillColor color="rgba(192,57,43,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="100" topLeftY="200" width="320" height="60">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.4">
+        <p>信息散落在十几个平台，小红书、大众点评、马蜂窝来回切</p>
+      </content>
+    </shape>
+    <shape type="rect" topLeftX="80" topLeftY="290" width="8" height="8">
+      <fill><fillColor color="rgba(192,57,43,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="100" topLeftY="280" width="320" height="60">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.4">
+        <p>攻略千人一面，不关心你是几个人、什么预算、几天行程</p>
+      </content>
+    </shape>
+    <shape type="rect" topLeftX="80" topLeftY="370" width="8" height="8">
+      <fill><fillColor color="rgba(192,57,43,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="100" topLeftY="360" width="320" height="60">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.4">
+        <p>到了当地才发现：门票涨价、景点闭馆、天气下雨、排队长龙</p>
+      </content>
+    </shape>
+
+    <!-- 中分隔线 -->
+    <line startX="480" startY="170" endX="480" endY="430">
+      <border color="rgba(180,175,165,1)" width="1" dashArray="dot"/>
+    </line>
+
+    <!-- 右：解法 -->
+    <shape type="text" topLeftX="540" topLeftY="160" width="340" height="34">
+      <content textType="headline" fontSize="18" color="rgba(45,106,79,1)" fontFamily="思源黑体" bold="true">
+        <p>城知的三个解法</p>
+      </content>
+    </shape>
+    <shape type="rect" topLeftX="540" topLeftY="210" width="8" height="8">
+      <fill><fillColor color="rgba(45,106,79,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="560" topLeftY="200" width="320" height="60">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.4">
+        <p>一个对话入口：9 座城市拟人接待官，像本地朋友一样聊天</p>
+      </content>
+    </shape>
+    <shape type="rect" topLeftX="540" topLeftY="290" width="8" height="8">
+      <fill><fillColor color="rgba(45,106,79,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="560" topLeftY="280" width="320" height="60">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.4">
+        <p>听懂人数、预算、天数、偏好，直接出可落地的定制行程</p>
+      </content>
+    </shape>
+    <shape type="rect" topLeftX="540" topLeftY="370" width="8" height="8">
+      <fill><fillColor color="rgba(45,106,79,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="560" topLeftY="360" width="320" height="60">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.4">
+        <p>实时调天气、门票、路况、联网搜索，出发前就替你避坑</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>川渝是顶流文旅目的地，但游客做攻略其实很累：信息散、模板化、到了才踩坑。</p>
+      <p>我们的判断是，游客要的不是"又一份攻略"，而是一个懂本地、能实时查、会按自己情况调整的对话伙伴。</p>
+      <p>城知就从这个切口切入。</p>
+    </content>
+  </note>
+</slide>

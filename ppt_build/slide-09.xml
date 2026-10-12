@@ -1,0 +1,42 @@
+<slide>
+  <style>
+    <fill><fillColor color="linear-gradient(135deg,rgba(26,58,74,1) 0%,rgba(45,106,79,1) 100%)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="110" width="800" height="50">
+      <content textType="title" fontSize="34" color="rgba(255,255,255,1)" fontFamily="思源宋体" bold="true">
+        <p>让川渝文化，被一次对话打开</p>
+      </content>
+    </shape>
+    <line startX="84" startY="180" endX="200" endY="180">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+
+    <shape type="text" topLeftX="80" topLeftY="210" width="800" height="120">
+      <content textType="body" fontSize="17" color="rgba(255,255,255,0.9)" fontFamily="思源黑体" lineSpacing="multiple:1.8">
+        <p>· 10 个城市 IP 拟人，对话即接待</p>
+        <p>· 规则路由 + ReAct 工具调度，稳、快、可控</p>
+        <p>· 从自由问答、非遗互动到团建方案，闭环可用</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="380" width="800" height="80">
+      <content textType="body" fontSize="14" color="rgba(255,255,255,0.65)" fontFamily="思源黑体" lineSpacing="multiple:1.6">
+        <p>下一步：接入更多城市 ｜ 非遗真实图片与音效 ｜ 向量检索增强 ｜ 小程序 / 多端落地</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="470" width="800" height="30">
+      <content textType="headline" fontSize="18" color="rgba(255,255,255,1)" fontFamily="思源宋体" bold="true">
+        <p>谢谢，请评委指正</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>总结一下：城知把川渝 9 座城市拟成 10 个接待官，用对话完成从问答到行程到团建的闭环。</p>
+      <p>技术上我们坚持轻量可控，规则路由加 ReAct，比赛现场稳定可演示。</p>
+      <p>这是我们下一步想做的方向。谢谢各位评委，请批评指正。</p>
+    </content>
+  </note>
+</slide>

@@ -1,0 +1,73 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="56" width="800" height="46">
+      <content textType="title" fontSize="30" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>亮点二：川渝非遗互动馆</p>
+      </content>
+    </shape>
+    <line startX="80" startY="118" endX="160" endY="118">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+    <shape type="text" topLeftX="80" topLeftY="130" width="800" height="30">
+      <content textType="body" fontSize="14" color="rgba(90,90,90,1)" fontFamily="思源黑体">
+        <p>顶栏一键打开九宫格，每项非遗都能"动手玩"，再一键转 AI 深聊。</p>
+      </content>
+    </shape>
+
+    <!-- 左：9项非遗 -->
+    <shape type="text" topLeftX="80" topLeftY="185" width="380" height="30">
+      <content textType="headline" fontSize="16" color="rgba(45,106,79,1)" fontFamily="思源黑体" bold="true">
+        <p>已收录 9 项国家级非遗</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="225" width="380" height="260">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.9">
+        <p>川剧变脸 ｜ 蜀绣 ｜ 蜀锦</p>
+        <p>川江号子 ｜ 铜梁龙舞</p>
+        <p>青神竹编 ｜ 自贡扎染</p>
+        <p>荣昌折扇 ｜ 羌年</p>
+      </content>
+    </shape>
+
+    <line startX="490" startY="185" endX="490" endY="470">
+      <border color="rgba(200,195,185,1)" width="1" dashArray="dot"/>
+    </line>
+
+    <!-- 右：互动设计 -->
+    <shape type="text" topLeftX="520" topLeftY="185" width="380" height="30">
+      <content textType="headline" fontSize="16" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>每件都是可玩的小互动</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="520" topLeftY="230" width="380" height="60">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>· 变脸：点一下换脸谱颜色</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="520" topLeftY="285" width="380" height="60">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>· 龙灯：逐个点亮一整串灯笼</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="520" topLeftY="340" width="380" height="60">
+      <content textType="body" fontSize="14" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>· 号子：波纹随节奏起伏；扎染：染料在布上晕开</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="520" topLeftY="410" width="380" height="60">
+      <content textType="body" fontSize="14" color="rgba(45,106,79,1)" fontFamily="思源黑体" lineSpacing="multiple:1.5">
+        <p>玩完点"问问 AI"，直接转成深度讲解对话</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>非遗这一块我们没有做成死板的图文介绍，而是做成了一个可以点的九宫格。</p>
+      <p>9 项国家级非遗，每项配一个纯 CSS 的小互动：变脸点一下换脸谱、龙灯逐个点亮、号子波纹跳动。</p>
+      <p>玩腻了点"问问AI"，就直接带着这个非遗名称进入和对应城市IP的对话，形成从体验到深聊的闭环。</p>
+    </content>
+  </note>
+</slide>

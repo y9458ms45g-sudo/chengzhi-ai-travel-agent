@@ -1,0 +1,47 @@
+<slide>
+  <style>
+    <fill>
+      <fillColor color="linear-gradient(135deg,rgba(26,58,74,1) 0%,rgba(45,106,79,1) 100%)"/>
+    </fill>
+  </style>
+  <data>
+    <shape type="rect" topLeftX="80" topLeftY="200" width="64" height="64">
+      <fill><fillColor color="rgba(192,57,43,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="200" width="64" height="64">
+      <content textType="title" fontSize="32" color="rgba(255,255,255,1)" textAlign="center" verticalAlign="middle" fontFamily="思源宋体" bold="true">
+        <p>城</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="170" topLeftY="188" width="700" height="80">
+      <content textType="title" fontSize="60" color="rgba(255,255,255,1)" textAlign="left" fontFamily="思源宋体" bold="true" letterSpacing="4">
+        <p>城知</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="172" topLeftY="278" width="700" height="40">
+      <content textType="headline" fontSize="24" color="rgba(255,255,255,0.9)" textAlign="left" fontFamily="思源黑体">
+        <p>川渝文化IP对话系统 · AI文旅Agent</p>
+      </content>
+    </shape>
+    <line startX="84" startY="360" endX="200" endY="360">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+    <shape type="text" topLeftX="84" topLeftY="380" width="800" height="36">
+      <content textType="body" fontSize="16" color="rgba(255,255,255,0.75)" textAlign="left" fontFamily="思源黑体">
+        <p>9 城 IP 拟人接待官 ｜ AI 自动城市转接 ｜ 非遗互动馆 ｜ 一键团建方案生成</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="84" topLeftY="470" width="800" height="28">
+      <content textType="caption" fontSize="13" color="rgba(255,255,255,0.5)" textAlign="left" fontFamily="思源黑体">
+        <p>FastAPI · SSE 流式 · SQLite · DeepSeek · ReAct 多工具调度</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>各位评委好，我们带来的项目叫"城知"，是一个川渝文化IP对话式文旅Agent。</p>
+      <p>它把川渝9座城市分别拟人格化接待官，游客像聊天一样提问，系统会自动识别城市、转接对应IP，并实时调用天气、知识库、联网搜索等工具给出靠谱的行程建议。</p>
+      <p>今天演示重点是三个亮点：AI自动城市转接、非遗互动馆、以及刚完成的一键团建方案生成。</p>
+    </content>
+  </note>
+</slide>

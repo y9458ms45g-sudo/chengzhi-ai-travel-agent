@@ -1,0 +1,70 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="50" width="800" height="44">
+      <content textType="title" fontSize="30" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>现场演示脚本（约 3 分钟）</p>
+      </content>
+    </shape>
+    <line startX="80" startY="110" endX="160" endY="110">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+
+    <shape type="text" topLeftX="80" topLeftY="150" width="60" height="34">
+      <content textType="headline" fontSize="22" color="rgba(192,57,43,1)" fontFamily="思源宋体" bold="true"><p>1</p></content>
+    </shape>
+    <shape type="text" topLeftX="130" topLeftY="150" width="770" height="34">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体"><p>开场：双击 start.bat，打开三栏主界面，介绍 10 个 IP 矩阵</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="200" width="60" height="34">
+      <content textType="headline" fontSize="22" color="rgba(192,57,43,1)" fontFamily="思源宋体" bold="true"><p>2</p></content>
+    </shape>
+    <shape type="text" topLeftX="130" topLeftY="200" width="770" height="34">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体"><p>自动转接：输入"成都有什么好吃的"，看头像/人设自动切成蓉蓉</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="250" width="60" height="34">
+      <content textType="headline" fontSize="22" color="rgba(192,57,43,1)" fontFamily="思源宋体" bold="true"><p>3</p></content>
+    </shape>
+    <shape type="text" topLeftX="130" topLeftY="250" width="770" height="34">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体"><p>工具调用：追问"明天乐山天气"，展示 weather 工具实时返回</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="300" width="60" height="34">
+      <content textType="headline" fontSize="22" color="rgba(192,57,43,1)" fontFamily="思源宋体" bold="true"><p>4</p></content>
+    </shape>
+    <shape type="text" topLeftX="130" topLeftY="300" width="770" height="34">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体"><p>非遗馆：打开九宫格，点川剧变脸"换脸"，再点"问问AI"</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="350" width="60" height="34">
+      <content textType="headline" fontSize="22" color="rgba(192,57,43,1)" fontFamily="思源宋体" bold="true"><p>5</p></content>
+    </shape>
+    <shape type="text" topLeftX="130" topLeftY="350" width="770" height="34">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体"><p>团建方案：点"团建方案"填表，现场生成带预算明细的完整方案</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="400" width="60" height="34">
+      <content textType="headline" fontSize="22" color="rgba(192,57,43,1)" fontFamily="思源宋体" bold="true"><p>6</p></content>
+    </shape>
+    <shape type="text" topLeftX="130" topLeftY="400" width="770" height="34">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体"><p>收尾：点"导出"下载对话 Markdown，说明刷新后历史仍在</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="470" width="800" height="30">
+      <content textType="caption" fontSize="12" color="rgba(120,120,120,1)" fontFamily="思源黑体">
+        <p>演示前准备：先 Ctrl+F5 硬刷新前端，避免 transfer 旧 JS 缓存；确认网络可访问 DeepSeek。</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>这是我们彩排过的 3 分钟演示脚本，六步走。</p>
+      <p>重点秀三个：自动转接、非遗互动、团建方案；最后用导出收尾，展示对话是持久化的。</p>
+      <p>提醒一句：演示前先硬刷新，避免旧 JS 缓存导致转接不生效。</p>
+    </content>
+  </note>
+</slide>

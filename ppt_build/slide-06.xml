@@ -1,0 +1,67 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="56" width="800" height="46">
+      <content textType="title" fontSize="30" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>亮点三：一键团建方案生成</p>
+      </content>
+    </shape>
+    <line startX="80" startY="118" endX="160" endY="118">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+    <shape type="text" topLeftX="80" topLeftY="130" width="800" height="30">
+      <content textType="body" fontSize="14" color="rgba(90,90,90,1)" fontFamily="思源黑体">
+        <p>HR 填一张表，系统自动调工具出方案——从"去哪玩"到"多少钱"一次说清。</p>
+      </content>
+    </shape>
+
+    <!-- 左：表单字段 -->
+    <shape type="text" topLeftX="80" topLeftY="180" width="360" height="30">
+      <content textType="headline" fontSize="16" color="rgba(192,57,43,1)" fontFamily="思源黑体" bold="true">
+        <p>用户只需填这几项</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="220" width="380" height="250">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.9">
+        <p>· 目的地城市（9 城可选）</p>
+        <p>· 人数 / 出行日期 / 天数</p>
+        <p>· 人均预算</p>
+        <p>· 团建偏好（户外/美食/文化/亲子…）</p>
+      </content>
+    </shape>
+
+    <line startX="480" startY="180" endX="480" endY="470">
+      <border color="rgba(200,195,185,1)" width="1" dashArray="dot"/>
+    </line>
+
+    <!-- 右：自动产出 -->
+    <shape type="text" topLeftX="510" topLeftY="180" width="380" height="30">
+      <content textType="headline" fontSize="16" color="rgba(45,106,79,1)" fontFamily="思源黑体" bold="true">
+        <p>系统自动做这些</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="510" topLeftY="220" width="380" height="250">
+      <content textType="body" fontSize="15" color="rgba(42,42,42,1)" fontFamily="思源黑体" lineSpacing="multiple:1.9">
+        <p>· 调 scenic 查景点门票、weather 查天气</p>
+        <p>· 调 knowledge + web_search 找最新团建玩法</p>
+        <p>· 输出：每日行程 / 预算明细</p>
+        <p>· 团队互动环节 / 雨天备选 / 避坑提醒</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="80" topLeftY="485" width="800" height="30">
+      <content textType="caption" fontSize="12" color="rgba(120,120,120,1)" fontFamily="思源黑体">
+        <p>本次比赛前新完成：表单复用现有 SSE 流式通道，后端零改动，纯前端接入。</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>这是本次开发刚完成的功能。顶栏点"团建方案"弹出表单，HR 填城市、人数、日期、预算、偏好。</p>
+      <p>提交后系统自动拼成结构化指令，走原来的 ReAct 流程，自己去查景点门票、天气、最新玩法，然后给出完整方案：每日行程、预算明细、团建互动环节、雨天备选、避坑提醒。</p>
+      <p>技术上它复用了已有的流式通道，后端零改动，纯前端接入，是我们工程上"快速迭代"的一个例子。</p>
+    </content>
+  </note>
+</slide>

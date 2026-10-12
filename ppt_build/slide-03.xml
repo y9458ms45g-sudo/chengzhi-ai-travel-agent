@@ -1,0 +1,84 @@
+<slide>
+  <style>
+    <fill><fillColor color="rgb(245,241,234)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="80" topLeftY="56" width="800" height="46">
+      <content textType="title" fontSize="30" color="rgba(26,58,74,1)" fontFamily="思源宋体" bold="true">
+        <p>10 个川渝 IP，一个接待网络</p>
+      </content>
+    </shape>
+    <line startX="80" startY="118" endX="160" endY="118">
+      <border color="rgba(192,57,43,1)" width="3"/>
+    </line>
+    <shape type="text" topLeftX="80" topLeftY="130" width="800" height="30">
+      <content textType="body" fontSize="14" color="rgba(90,90,90,1)" fontFamily="思源黑体">
+        <p>省级接待官负责总览与路由，城市 IP 负责本地化深度解答，说哪座城就自动切到谁。</p>
+      </content>
+    </shape>
+
+    <table topLeftX="80" topLeftY="180" width="800" height="300">
+      <colgroup>
+        <col width="160"/>
+        <col width="120"/>
+        <col width="160"/>
+        <col width="360"/>
+      </colgroup>
+      <tr height="34">
+        <td><fill><fillColor color="rgba(26,58,74,1)"/></fill><content textType="body" fontSize="13" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>层级</p></content></td>
+        <td><fill><fillColor color="rgba(26,58,74,1)"/></fill><content textType="body" fontSize="13" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>IP 名</p></content></td>
+        <td><fill><fillColor color="rgba(26,58,74,1)"/></fill><content textType="body" fontSize="13" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>城市</p></content></td>
+        <td><fill><fillColor color="rgba(26,58,74,1)"/></fill><content textType="body" fontSize="13" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>人设定位</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>省级</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center" bold="true" color="rgba(45,106,79,1)"><p>川川</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>四川</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>四川省级接待官，川普，口头禅"要得"</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>省级</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center" bold="true" color="rgba(192,57,43,1)"><p>渝渝</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>重庆</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>重庆妹子，热情直爽，口头禅"巴适得板"</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>城市</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>蓉蓉</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>成都</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>休闲之都，美食熊猫，"耍安逸"</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>城市</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>山山</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>乐山</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>大佛峨眉山，甜皮鸭钵钵鸡</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>城市</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>酒仙</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>宜宾</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>五粮液、蜀南竹海、李庄古镇</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>城市</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>苏苏</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>眉山</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>东坡故里，三苏祠、东坡美食</p></content></td>
+      </tr>
+      <tr height="32">
+        <td><content textType="body" fontSize="12" textAlign="center"><p>城市</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>绵宝 / 充充 / 灯灯</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="center"><p>绵阳 / 南充 / 自贡</p></content></td>
+        <td><content textType="body" fontSize="12" textAlign="left"><p>科技城 · 阆中古城 · 恐龙灯会</p></content></td>
+      </tr>
+    </table>
+  </data>
+  <note>
+    <content textType="body">
+      <p>整个系统是两层 IP 架构：上面是川川、渝渝两个省级接待官，负责总览和路由。</p>
+      <p>下面是 8 个城市 IP，每个都有独立人设、口头禅和知识库。用户说哪座城，系统自动转接过去，不用手动选。</p>
+      <p>这张表就是我们的 IP 矩阵。</p>
+    </content>
+  </note>
+</slide>
