@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# 环境变量与密钥
+.env
+.env.local
+
+# 数据库
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# 日志
+*.log
+logs/
+
+# 评测产物
+data/eval_report.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# 录制视频
+*.mp4
+*.mov
+
+# 临时文件
+*.tmp
+*.bak
