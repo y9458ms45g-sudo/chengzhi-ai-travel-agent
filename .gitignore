@@ -34,6 +34,10 @@ Thumbs.db
 *.mp4
 *.mov
 
+# 图片资源（从 GitHub Release 下载）
+web/images/
+web/img/stroll/
+
 # 临时文件
 *.tmp
 *.bak

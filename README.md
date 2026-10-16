@@ -63,6 +63,17 @@ cp .env.example .env
 python -c "from app.db import init_db; init_db()"
 ```
 
+### 3.5 下载图片资源（逛一逛模块需要）
+
+图片体积较大（390MB+），不放在 git 里。从 [Releases](https://github.com/y9458ms45g-sudo/chengzhi-ai-travel-agent/releases) 下载 `chengzhi_images.zip`，解压到 `web/` 目录：
+
+```bash
+# 解压后应该是 web/images/ 和 web/img/stroll/ 两个目录
+unzip chengzhi_images.zip -d web/
+```
+
+不下图片也能跑，只是"逛一逛"卡片没有图。
+
 ### 4. 启动后端
 
 ```bash
